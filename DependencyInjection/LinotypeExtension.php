@@ -1,6 +1,6 @@
 <?php
 
-namespace Linotype\Bundle\SymfonyBundle\DependencyInjection;
+namespace Linotype\Bundle\LinotypeBundle\DependencyInjection;
 
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\FileLocator;
@@ -11,9 +11,9 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Linotype\Bundle\SymfonyBundle\Core\Linotype;
-use Linotype\Bundle\SymfonyBundle\DataCollector\LinotypeCollector;
-use Linotype\Bundle\SymfonyBundle\Service\MyService;
+use Linotype\Bundle\LinotypeBundle\Core\Linotype;
+use Linotype\Bundle\LinotypeBundle\DataCollector\LinotypeCollector;
+use Linotype\Bundle\LinotypeBundle\Service\MyService;
 
 class LinotypeExtension extends Extension
 {

@@ -16,7 +16,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Linotype\\Bundle\\SymfonyBundle\\": "",
+            "Linotype\\Bundle\\LinotypeBundle\\": "",
             "Linotype\\Helper\\": "../../../../linotype/Helper/"
         },
         "exclude-from-classmap": [
@@ -26,7 +26,7 @@
     "repositories": [
         {
             "type": "path",
-            "url": "SymfonyBundle"
+            "url": "LinotypeBundle"
         }
     ],
     "require": {

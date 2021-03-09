@@ -10,76 +10,76 @@
         <prototype namespace="Linotype\Helper\" resource="../../../../../linotype/Helper/*" public="true" autowire="true" autoconfigure="true"/>
 
         <!-- Linotype: Inject Services for helper -->
-        <!-- <prototype namespace="Linotype\Bundle\SymfonyBundle\Linotype\" resource="../../../src/Linotype/*" public="true" autowire="true" autoconfigure="true"/> -->
+        <!-- <prototype namespace="Linotype\Bundle\LinotypeBundle\Linotype\" resource="../../../src/Linotype/*" public="true" autowire="true" autoconfigure="true"/> -->
 
         <!-- Linotype: Core -->
-        <service id="linotype" class="Linotype\Bundle\SymfonyBundle\Core\Linotype" public="true">
+        <service id="linotype" class="Linotype\Bundle\LinotypeBundle\Core\Linotype" public="true">
             <argument type="service" id="service_container"/>
             <argument type="service" id="linotype.config"/>
         </service>
-        <service alias="linotype" id="Linotype\Bundle\SymfonyBundle\Core\Linotype" public="true"/>
+        <service alias="linotype" id="Linotype\Bundle\LinotypeBundle\Core\Linotype" public="true"/>
 
         <!-- Linotype: Collector -->
-        <service class="Linotype\Bundle\SymfonyBundle\DataCollector\LinotypeCollector" id="Linotype\Bundle\SymfonyBundle\DataCollector\LinotypeCollector" public="false">
+        <service class="Linotype\Bundle\LinotypeBundle\DataCollector\LinotypeCollector" id="Linotype\Bundle\LinotypeBundle\DataCollector\LinotypeCollector" public="false">
             <argument type="service" id="linotype" />
             <tag name="data_collector" template="@Linotype/Collector/linotype.html.twig" id="linotype" />
         </service>
 
         <!-- Service: Config -->
-        <service id="linotype.config" class="Linotype\Bundle\SymfonyBundle\Service\LinotypeConfig" public="true">
+        <service id="linotype.config" class="Linotype\Bundle\LinotypeBundle\Service\LinotypeConfig" public="true">
             <argument type="service" id="service_container"/>
             <argument type="service" id="linotype.repo.meta"/>
         </service>
-        <service alias="linotype.config" id="Linotype\Bundle\SymfonyBundle\Service\LinotypeConfig" public="false"/>
+        <service alias="linotype.config" id="Linotype\Bundle\LinotypeBundle\Service\LinotypeConfig" public="false"/>
 
         <!-- Service: Loader -->
-        <service id="linotype.loader" class="Linotype\Bundle\SymfonyBundle\Service\LinotypeLoader" public="true">
+        <service id="linotype.loader" class="Linotype\Bundle\LinotypeBundle\Service\LinotypeLoader" public="true">
             <argument type="service" id="service_container"/>
             <argument type="service" id="twig"/>
             <argument type="service" id="linotype.config"/>
         </service>
-        <service alias="linotype.loader" id="Linotype\Bundle\SymfonyBundle\Service\LinotypeLoader" public="false"/>
+        <service alias="linotype.loader" id="Linotype\Bundle\LinotypeBundle\Service\LinotypeLoader" public="false"/>
         
         <!-- Service: LinotypeMetaRepository -->
-        <service id="linotype.repo.meta" class="Linotype\Bundle\SymfonyBundle\Repository\LinotypeMetaRepository" public="true">
+        <service id="linotype.repo.meta" class="Linotype\Bundle\LinotypeBundle\Repository\LinotypeMetaRepository" public="true">
             <argument type="service" id="Doctrine\Common\Persistence\ManagerRegistry"/>
         </service>
-        <service alias="linotype.repo.meta" id="Linotype\Bundle\SymfonyBundle\Repository\LinotypeMetaRepository" public="false"/>
+        <service alias="linotype.repo.meta" id="Linotype\Bundle\LinotypeBundle\Repository\LinotypeMetaRepository" public="false"/>
 
         <!-- Service: LinotypeOptionRepository -->
-        <service id="linotype.repo.option" class="Linotype\Bundle\SymfonyBundle\Repository\LinotypeOptionRepository" public="true">
+        <service id="linotype.repo.option" class="Linotype\Bundle\LinotypeBundle\Repository\LinotypeOptionRepository" public="true">
             <argument type="service" id="Doctrine\Common\Persistence\ManagerRegistry"/>
         </service>
-        <service alias="linotype.repo.option" id="Linotype\Bundle\SymfonyBundle\Repository\LinotypeOptionRepository" public="false"/>
+        <service alias="linotype.repo.option" id="Linotype\Bundle\LinotypeBundle\Repository\LinotypeOptionRepository" public="false"/>
 
         <!-- Service: LinotypeTemplateRepository -->
-        <service id="linotype.repo.template" class="Linotype\Bundle\SymfonyBundle\Repository\LinotypeTemplateRepository" public="true">
+        <service id="linotype.repo.template" class="Linotype\Bundle\LinotypeBundle\Repository\LinotypeTemplateRepository" public="true">
             <argument type="service" id="Doctrine\Common\Persistence\ManagerRegistry"/>
         </service>
-        <service alias="linotype.repo.template" id="Linotype\Bundle\SymfonyBundle\Repository\LinotypeTemplateRepository" public="false"/>
+        <service alias="linotype.repo.template" id="Linotype\Bundle\LinotypeBundle\Repository\LinotypeTemplateRepository" public="false"/>
 
         <!-- Service: LinotypeMetaRepository -->
-        <service id="linotype.repo.meta" class="Linotype\Bundle\SymfonyBundle\Repository\LinotypeMetaRepository" public="true">
+        <service id="linotype.repo.meta" class="Linotype\Bundle\LinotypeBundle\Repository\LinotypeMetaRepository" public="true">
             <argument type="service" id="Doctrine\Common\Persistence\ManagerRegistry"/>
         </service>
-        <service alias="linotype.repo.meta" id="Linotype\Bundle\SymfonyBundle\Repository\LinotypeMetaRepository" public="false"/>
+        <service alias="linotype.repo.meta" id="Linotype\Bundle\LinotypeBundle\Repository\LinotypeMetaRepository" public="false"/>
 
         <!-- Service: Test -->
-        <service id="linotype.my_service" class="Linotype\Bundle\SymfonyBundle\Service\MyService" public="true"/>
-        <service alias="linotype.my_service" id="Linotype\Bundle\SymfonyBundle\Service\MyService" public="false"/>
+        <service id="linotype.my_service" class="Linotype\Bundle\LinotypeBundle\Service\MyService" public="true"/>
+        <service alias="linotype.my_service" id="Linotype\Bundle\LinotypeBundle\Service\MyService" public="false"/>
 
         <!-- Service: Twig -->
-        <service id="linotype.twig" class="Linotype\Bundle\SymfonyBundle\Twig\LinotypeTwig" public="true">
+        <service id="linotype.twig" class="Linotype\Bundle\LinotypeBundle\Twig\LinotypeTwig" public="true">
             <argument type="service" id="service_container"/>
             <argument type="service" id="twig"/>
             <argument type="service" id="linotype"/>
             <argument type="service" id="linotype.repo.meta"/>
             <tag name="twig.extension" />
         </service>
-        <service alias="linotype.twig" id="Linotype\Bundle\SymfonyBundle\Twig\LinotypeTwig" public="false"/>
+        <service alias="linotype.twig" id="Linotype\Bundle\LinotypeBundle\Twig\LinotypeTwig" public="false"/>
 
         <!-- Controller: linotype -->
-        <service id="linotype.controller" class="Linotype\Bundle\SymfonyBundle\Controller\LinotypeController" public="true">
+        <service id="linotype.controller" class="Linotype\Bundle\LinotypeBundle\Controller\LinotypeController" public="true">
             <call method="setContainer">
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
@@ -87,10 +87,10 @@
             <tag name="controller.service_arguments"/>
             <argument type="service" id="linotype.loader"/>
         </service>
-        <service alias="linotype.controller" id="Linotype\Bundle\SymfonyBundle\Controller\LinotypeController" public="true"/>
+        <service alias="linotype.controller" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeController" public="true"/>
 
         <!-- Controller: admin -->
-        <service id="linotype.controller.admin" class="Linotype\Bundle\SymfonyBundle\Controller\LinotypeAdminController" public="true">
+        <service id="linotype.controller.admin" class="Linotype\Bundle\LinotypeBundle\Controller\LinotypeAdminController" public="true">
             <call method="setContainer">
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
@@ -98,10 +98,10 @@
             <tag name="controller.service_arguments"/>
             <argument type="service" id="linotype.loader"/>
         </service>
-        <service alias="linotype.controller.admin" id="Linotype\Bundle\SymfonyBundle\Controller\LinotypeAdminController" public="true"/>
+        <service alias="linotype.controller.admin" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeAdminController" public="true"/>
 
         <!-- Controller: admin block -->
-        <service id="linotype.controller.admin.block" class="Linotype\Bundle\SymfonyBundle\Controller\LinotypeAdminBlockController" public="true">
+        <service id="linotype.controller.admin.block" class="Linotype\Bundle\LinotypeBundle\Controller\LinotypeAdminBlockController" public="true">
             <call method="setContainer">
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
@@ -109,10 +109,10 @@
             <tag name="controller.service_arguments"/>
             <argument type="service" id="linotype.loader"/>
         </service>
-        <service alias="linotype.controller.admin.block" id="Linotype\Bundle\SymfonyBundle\Controller\LinotypeAdminBlockController" public="true"/>
+        <service alias="linotype.controller.admin.block" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeAdminBlockController" public="true"/>
 
         <!-- Controller: helper -->
-        <service id="linotype.controller.helper" class="Linotype\Bundle\SymfonyBundle\Controller\LinotypeHelperController" public="true">
+        <service id="linotype.controller.helper" class="Linotype\Bundle\LinotypeBundle\Controller\LinotypeHelperController" public="true">
             <call method="setContainer">
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
@@ -120,10 +120,10 @@
             <tag name="controller.service_arguments"/>
             <argument type="service" id="linotype.loader"/>
         </service>
-        <service alias="linotype.controller.helper" id="Linotype\Bundle\SymfonyBundle\Controller\LinotypeHelperController" public="true"/>
+        <service alias="linotype.controller.helper" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeHelperController" public="true"/>
 
         <!-- Routing -->
-        <service id="Linotype\Bundle\SymfonyBundle\Routing\ExtraLoader" public="true">
+        <service id="Linotype\Bundle\LinotypeBundle\Routing\ExtraLoader" public="true">
             <argument type="service" id="linotype" />
             <tag name="routing.loader"/>
         </service>

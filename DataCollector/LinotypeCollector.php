@@ -1,12 +1,12 @@
 <?php
 
-namespace Linotype\Bundle\SymfonyBundle\DataCollector;
+namespace Linotype\Bundle\LinotypeBundle\DataCollector;
 
-use Linotype\Bundle\SymfonyBundle\Service\LinotypeConfig;
+use Linotype\Bundle\LinotypeBundle\Service\LinotypeConfig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
-use Linotype\Bundle\SymfonyBundle\Core\Linotype;
+use Linotype\Bundle\LinotypeBundle\Core\Linotype;
 
 final class LinotypeCollector extends DataCollector
 {
