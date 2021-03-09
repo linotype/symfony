@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Linotype\Symfony\Core\Linotype;
 use Linotype\Symfony\DependencyInjection\LinotypeExtension;
 
-class LinotypeSymfony extends Bundle 
+class LinotypeBundle extends Bundle 
 {
     public function build(ContainerBuilder $container)
     {

@@ -26,7 +26,7 @@
     "repositories": [
         {
             "type": "path",
-            "url": "LinotypeSymfony"
+            "url": "LinotypeBundle"
         }
     ],
     "require": {
