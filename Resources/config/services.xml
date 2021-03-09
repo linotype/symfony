@@ -10,7 +10,7 @@
         <prototype namespace="Linotype\Helper\" resource="../../../../../linotype/Helper/*" public="true" autowire="true" autoconfigure="true"/>
 
         <!-- Linotype: Inject Services for helper -->
-        <prototype namespace="Linotype\Symfony\Linotype\" resource="../../../src/Linotype/*" public="true" autowire="true" autoconfigure="true"/>
+        <!-- <prototype namespace="Linotype\Symfony\Linotype\" resource="../../../src/Linotype/*" public="true" autowire="true" autoconfigure="true"/> -->
 
         <!-- Linotype: Core -->
         <service id="linotype" class="Linotype\Symfony\Core\Linotype" public="true">

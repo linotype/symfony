@@ -20,7 +20,8 @@ class LinotypeExtension extends Extension
 
     public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        
+        $loader = new XmlFileLoader($container, new FileLocator( dirname( __DIR__ ) .'/Resources/config' ));
         $loader->load('services.xml');
 
         // $loaderCustom = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
