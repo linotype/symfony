@@ -1,13 +1,13 @@
 <?php
 
-namespace Linotype\SymfonyBundle\Controller;
+namespace Linotype\Bundle\SymfonyBundle\Controller;
 
-use Linotype\SymfonyBundle\Entity\LinotypeMeta;
-use Linotype\SymfonyBundle\Entity\LinotypeTemplate;
-use Linotype\SymfonyBundle\Repository\LinotypeMetaRepository;
-use Linotype\SymfonyBundle\Repository\LinotypeTemplateRepository;
-use Linotype\SymfonyBundle\Service\LinotypeConfig;
-use Linotype\SymfonyBundle\Service\LinotypeLoader;
+use Linotype\Bundle\SymfonyBundle\Entity\LinotypeMeta;
+use Linotype\Bundle\SymfonyBundle\Entity\LinotypeTemplate;
+use Linotype\Bundle\SymfonyBundle\Repository\LinotypeMetaRepository;
+use Linotype\Bundle\SymfonyBundle\Repository\LinotypeTemplateRepository;
+use Linotype\Bundle\SymfonyBundle\Service\LinotypeConfig;
+use Linotype\Bundle\SymfonyBundle\Service\LinotypeLoader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;

@@ -1,11 +1,11 @@
 <?php
 
-namespace Linotype\SymfonyBundle\Controller;
+namespace Linotype\Bundle\SymfonyBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Linotype\SymfonyBundle\Service\MyService;
+use Linotype\Bundle\SymfonyBundle\Service\MyService;
 
 class MyController extends AbstractController
 {

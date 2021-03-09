@@ -1,6 +1,6 @@
 <?php
 
-namespace Linotype\SymfonyBundle\Service;
+namespace Linotype\Bundle\SymfonyBundle\Service;
 
 class LinotypeRender
 {

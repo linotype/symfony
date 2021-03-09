@@ -1,8 +1,8 @@
 <?php
 
-namespace Linotype\SymfonyBundle\Entity;
+namespace Linotype\Bundle\SymfonyBundle\Entity;
 
-use Linotype\SymfonyBundle\Repository\LinotypeMetaRepository;
+use Linotype\Bundle\SymfonyBundle\Repository\LinotypeMetaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

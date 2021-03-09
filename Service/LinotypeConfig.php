@@ -1,11 +1,11 @@
 <?php
 
-namespace Linotype\SymfonyBundle\Service;
+namespace Linotype\Bundle\SymfonyBundle\Service;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
-use Linotype\SymfonyBundle\Repository\LinotypeMetaRepository;
+use Linotype\Bundle\SymfonyBundle\Repository\LinotypeMetaRepository;
 
 class LinotypeConfig
 {

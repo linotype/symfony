@@ -1,12 +1,12 @@
 <?php
 
-namespace Linotype\SymfonyBundle;
+namespace Linotype\Bundle\SymfonyBundle;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Linotype\SymfonyBundle\Core\Linotype;
-use Linotype\SymfonyBundle\DependencyInjection\LinotypeExtension;
+use Linotype\Bundle\SymfonyBundle\Core\Linotype;
+use Linotype\Bundle\SymfonyBundle\DependencyInjection\LinotypeExtension;
 
 class SymfonyBundle extends Bundle 
 {
