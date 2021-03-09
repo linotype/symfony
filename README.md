@@ -1,1 +1,1 @@
-# linotypeBundle
+# linotype
