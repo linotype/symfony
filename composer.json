@@ -33,6 +33,7 @@
         "php": ">=7.2.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/doctrine-bundle": "^2.2",
         "doctrine/orm": "^2.8",
         "symfony/console": "5.2.*",
