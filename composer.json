@@ -23,6 +23,12 @@
             "/Tests/"
         ]
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "LinotypeSymfony"
+        }
+    ],
     "require": {
         "php": ">=7.2.5",
         "ext-ctype": "*",
