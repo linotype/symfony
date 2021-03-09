@@ -1,0 +1,38 @@
+block:
+
+  version: 1.0
+  package: ynk
+  
+  name: Menu
+  desc: Create a simple menu
+  
+  parent: all
+  accept:
+    - MenuItem
+
+  context: 
+
+    items:
+      title: Items
+      desc: Your menu items
+      field: Text
+      save: static
+      value:  []
+      #   home:
+      #     name: Home
+      #     path: /
+    
+    padding:
+      field: Text
+      save: static
+      value: 0 .2rem 0 .2rem
+
+    margin:
+      field: Text
+      save: static
+      value: 1rem 0 1rem 0
+
+    font_size:
+      field: Text
+      save: static
+      value: 1rem

@@ -1,0 +1,30 @@
+module:
+
+  version: 1.0
+  package: ynk
+  
+  name: Header
+  desc: Display header website
+
+  layout:
+
+    sitename:
+      block: Title
+      override:
+        text:
+          field: Text
+          save: static
+          value: Linotype
+        font_size:
+          value: 5rem
+          css: true
+          js: true
+        color:
+          title: Couleur du titre du site
+          field: Text
+          default: red
+          css: true
+          js: true
+          
+    menu:
+      block: Menu

@@ -1,0 +1,141 @@
+{% apply spaceless %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Linotype{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <script async="" defer="" src="{{ asset('assets/js/backend.js') }}"></script>
+        {% block stylesheets %}
+            <link href="{{ asset('assets/css/backend.css') }}" rel="stylesheet">
+        {% endblock %}
+    </head>
+    <body>
+        {% block body %}
+        <div class="linotype-admin linotype-helper">
+            <h1><a href="/">Website</a> | <a href="/admin">Administration</a> | Linotype</h1>
+            <div class="row">
+                <div class="col">
+                    <div class="blocks inner">
+                        <h2>Blocks</h2>
+                        <ul>
+                            {% for item in linotype.blocks %}
+                                <li>
+                                    <div class="name"><strong>{{ item.name }}</strong></div>
+                                    <div class="desc">{{ item.desc }}</div>
+
+                                    <div class="infos">
+                                        v.<span class="version">{{ item.version|number_format(1) }}</span> by <span class="package">{{ item.package }}</span>
+                                    </div>
+
+                                    {# <div class="id">{{ item.id }}</div>
+                                    <div class="path">{{ item.path }}</div>
+                                    <div class="dir">{{ item.dir }}</div>
+                                    <div class="yml">{{ item.yml }}</div>
+                                    <div class="twig">{{ item.twig }}</div>
+                                    <div class="scss">{{ item.scss }}</div>
+                                    <div class="js">{{ item.js }}</div> #}
+
+                                    {# <div class="parent">{{ item.parent }}</div> #}
+                                    {# <div class="accept">{{ item.accept }}</div> #}
+
+                                    {# {% for context in item.context %}
+                                        <div class="title">{{ context.title }}</div>
+                                        <div class="desc">{{ context.desc }}</div>
+                                        <div class="field">{{ context.field }}</div>
+                                    {% endfor %} #}
+
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="fields inner">
+                        <h2>Fields</h2>
+                        <ul>
+                            {% for item in linotype.fields %}
+                                <li>
+                                    <div class="name"><strong>{{ item.name }}</strong></div>
+                                    <div class="desc">{{ item.desc }}</div>
+                                    <div class="infos">
+                                        v.<span class="version">{{ item.version|number_format(1) }}</span> by <span class="package">{{ item.package }}</span>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="helpers inner">
+                        <h2>Helpers</h2>
+                        <ul>
+                            {% for item in linotype.helpers %}
+                                <li>
+                                    <div class="name"><strong>{{ item.name }}</strong></div>
+                                    <div class="desc">{{ item.desc }}</div>
+                                    <div class="infos">
+                                        v.<span class="version">{{ item.version|number_format(1) }}</span> by <span class="package">{{ item.package }}</span>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="modules inner">
+                        <h2>Modules</h2>
+                        <ul>
+                            {% for item in linotype.modules %}
+                                <li>
+                                    <div class="name"><strong>{{ item.name }}</strong></div>
+                                    <div class="desc">{{ item.desc }}</div>
+                                    <div class="infos">
+                                        v.<span class="version">{{ item.version|number_format(1) }}</span> by <span class="package">{{ item.package }}</span>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="templates inner">
+                        <h2>Templates</h2>
+                        <ul>
+                            {% for item in linotype.templates %}
+                                <li>
+                                    <div class="name"><strong>{{ item.name }}</strong></div>
+                                    <div class="desc">{{ item.desc }}</div>
+                                    <div class="infos">
+                                        v.<span class="version">{{ item.version|number_format(1) }}</span> by <span class="package">{{ item.package }}</span>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="themes inner">
+                        <h2>Themes</h2>
+                        <ul>
+                            {% for item in linotype.themes %}
+                                <li>
+                                    <div class="name"><strong>{{ item.name }}</strong></div>
+                                    <div class="desc">{{ item.desc }}</div>
+                                    <div class="infos">
+                                        v.<span class="version">{{ item.version|number_format(1) }}</span> by <span class="package">{{ item.package }}</span>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+        {% block javascripts %}
+            <script type="text/javascript">var linotype = [];</script>
+        {% endblock %}
+    </body>
+</html>
+{% endapply %}

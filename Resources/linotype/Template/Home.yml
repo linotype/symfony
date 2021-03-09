@@ -1,0 +1,38 @@
+template:
+
+  version: 1.0
+  package: ynk
+
+  name: Home
+  desc: Home page
+
+  type: single
+
+  layout:
+
+    header:
+      module: Header
+
+    intro:
+      block: Title
+      override:
+        text:
+          title: Texte ligne 1
+
+    content:
+      block: Title
+      override:
+        text:
+          title: Texte ligne 2
+          field: Text
+          save: static
+          value: Edited from template static override !
+    
+    outro:
+      block: Title
+      override:
+        text:
+          title: Texte ligne 3
+      
+    footer:
+      module: Footer

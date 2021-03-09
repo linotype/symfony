@@ -1,0 +1,7 @@
+linotype:
+    resource: .
+    type: extra
+
+linotype_admin:
+    resource: '../../../src/Controller/'
+    type: annotation

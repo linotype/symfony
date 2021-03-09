@@ -1,0 +1,33 @@
+block:
+
+  version: 1.2
+  package: ynk
+  
+  name: Title
+  desc: Create a simple title
+  
+  parent: all
+  accept: all
+
+  context: 
+
+    text:
+      title: Text
+      desc: Your text content
+      field: Text
+      option:
+        placeholder: The title
+      value: '' #TODO debug if empty
+      default: And i, from the default block context
+      preview: Lorem ipusum
+      
+
+    margin:
+      field: Text
+      save: static
+      value: 1rem 0 1rem 0
+
+    font_size:
+      field: Text
+      save: static
+      value: 2rem

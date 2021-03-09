@@ -1,0 +1,78 @@
+theme:
+  
+  version: 1.0
+  package: ynk
+  name: Default
+  desc: default theme
+
+  map:
+    
+    home:
+      name: Home
+      desc: The home page
+      public: true
+      path: /
+      template: Home
+      view: true
+      edit: true
+      delete: false
+      create: false
+
+    about:
+      name: About
+      desc: Present yourself
+      public: true
+      path: /about
+      template: About
+      view: true
+      edit: true
+      delete: false
+      create: false
+
+    articles:
+      name: Articles
+      desc: List of article
+      public: true
+      path: /articles
+      template: Articles
+      view: true
+      edit: true
+      delete: false
+      create: false
+
+    article:
+      name: Article
+      desc: Display one article
+      public: true
+      path: /article/{id}
+      template: Article
+      view: true
+      edit: true
+      delete: false
+      create: false
+
+    contact:
+      name: Contact
+      desc: Contact form
+      public: true
+      path: /contact
+      template: Form
+      view: true
+      edit: true
+      delete: false
+      create: false
+      override:
+        form:
+          override:
+            form_id: contact
+    
+    test:
+      name: Test
+      desc: Simple test page
+      public: false
+      path: /test
+      template: Test
+      view: true
+      edit: true
+      delete: false
+      create: false

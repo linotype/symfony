@@ -1,0 +1,159 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+    {% set icon %}
+        {# this is the content displayed as a panel in the toolbar #}
+        <div class="sf-toolbar-persist"></div>
+        <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M38 0H0V38H38V0ZM27 11H11V27H27V11Z" fill="#C4C4C4"/>
+        </svg>
+        <span class="sf-toolbar-value">linotype</span>
+    {% endset %}
+
+    {% set text %}
+        <style type="text/css">
+        .sf-toolbar-block.sf-toolbar-block-linotype .sf-toolbar-info  {
+            max-width: none!important;
+            width: 100%!important;
+            position: fixed!important;
+            box-sizing: border-box!important;
+            left: 0!important;
+        }
+        .sf-toolbar-block.sf-toolbar-block-linotype .sf-toolbar-info .sf-toolbar-info-piece.fullwidth {
+            display:block!important;
+        }
+        .sf-toolbar-block.sf-toolbar-block-linotype.open .sf-toolbar-info, 
+        .sf-toolbar-block.sf-toolbar-block-linotype.open .sf-toolbar-info {
+            display: block!important;
+            padding: 10px!important;
+            max-width: 100%!important;
+            max-height: 480px!important;
+            word-wrap: break-word!important;
+            overflow: hidden!important;
+            overflow-y: auto!important;
+        }
+        .sf-toolbar-block.sf-toolbar-block-linotype.open .sf-toolbar-icon, 
+        .sf-toolbar-block.sf-toolbar-block-linotype.open .sf-toolbar-icon {
+            background-color: #444;
+            position: relative;
+            z-index: 10002;
+        }
+        .sf-toolbar-block.sf-toolbar-block-linotype .sf-toolbar-icon {
+            position:relative;
+        }
+        .sf-toolbar-block.sf-toolbar-block-linotype .sf-toolbar-persist {
+            height:100%;
+            width:100%;
+            cursor:pointer;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            display:block;
+            position:absolute;
+            z-index:1;
+        }
+        .sf-toolbar-block.sf-toolbar-block-linotype .sf-dump {
+            width:500px!important;
+            text-align:left;
+        }
+        .sf-toolbar-block.sf-toolbar-block-linotype .sf-toolbar-status {
+            padding:0!important;
+            margin:0!important;
+        }
+        .sf-toolbar-block.sf-toolbar-block-linotype .sf-dump,
+        .sf-toolbar-block.sf-toolbar-block-linotype .sf-toolbar-status {
+            margin:0!important;
+        }
+        </style>
+        <script>
+        function getCookie(name) {
+            var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+            return v ? v[2] : null;
+        }
+        function setCookie(name, value, days) {
+            var d = new Date;
+            d.setTime(d.getTime() + 24*60*60*1000*days);
+            document.cookie = name + "=" + value + ";path=/;expires=" + d.toGMTString();
+        }
+        setTimeout(function () {
+            if( getCookie('linotype_panel') == 'open' ){
+                document.getElementsByClassName('sf-toolbar-block-linotype')[0].classList.add('open');
+            }
+        }, 0);
+
+        document.addEventListener('click', function (event) {
+
+            if (!event.target.matches('.sf-toolbar-persist')) return;
+
+            if (event.target.closest('.sf-toolbar-block-linotype').classList.contains('open')) {
+                setCookie('linotype_panel', 'close', 365 );
+                event.target.closest('.sf-toolbar-block-linotype').classList.remove('open');
+            } else {
+                setCookie('linotype_panel', 'open', 365 );
+                event.target.closest('.sf-toolbar-block-linotype').classList.add('open');
+            }
+            event.preventDefault();
+
+        }, false);
+        </script>
+        {# this is the content displayed when hovering the mouse over the toolbar panel #}
+        <div class="sf-toolbar-info-piece fullwidth">
+            {% set logs = collector.linotype.logs %}
+            
+            {% for key, log in logs %}
+                <div class="sf-toolbar-info-piece">
+                    <b>{{log.title}}</b>
+                    <span class="sf-toolbar-status ">{{ dump( log.value ) }}</span>
+                </div>
+            {% endfor %}
+
+            {% set configs = collector.linotype.config %}
+            
+            {% for key, config in configs %}
+                <div class="sf-toolbar-info-piece">
+                    x
+                </div>
+            {% endfor %}
+          
+        </div>
+        
+    {% endset %}
+
+    {# the 'link' value set to 'false' means that this panel doesn't show a section in the web profiler #}
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: false }) }}
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    {# Optional. Here you can link to or define your own CSS and JS contents. #}
+    {# Use {{ parent() }} to extend the default styles instead of overriding them. #}
+    
+{% endblock %}
+
+{% block menu %}
+    {# This left-hand menu appears when using the full-screen profiler. #}
+    <span class="label">
+        <span class="icon">
+            <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M38 0H0V38H38V0ZM27 11H11V27H27V11Z" fill="#C4C4C4"/>
+            </svg>
+        </span>
+        <strong>linotype</strong>
+    </span>
+{% endblock %}
+
+{% block panel %}
+  
+    <h2>linotype</h2>
+    
+    {% set logs = collector.linotype.logs %}
+        
+    {% for key, log in logs %}
+        <div class="sf-toolbar-info-piece">
+            <b>{{log.title}}</b>
+            <span class="sf-toolbar-status ">{{ dump( log.value ) }}</span>
+        </div>
+    {% endfor %}
+  
+{% endblock %}

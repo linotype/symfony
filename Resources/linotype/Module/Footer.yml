@@ -1,0 +1,19 @@
+module:
+
+  version: 1.0
+  package: ynk
+  
+  name: Footer
+  desc: Display footer website
+
+  layout:
+
+    poweredby:
+      block: Title
+      override:
+        text:
+          field: Text
+          save: static
+          value: powered by linotype - <a href="https://docs.linotype.dev" target="_blank">docs</a> - <a href="/linotype">helper</a> - <a href="/admin">admin</a>
+        font_size:
+          value: 1rem

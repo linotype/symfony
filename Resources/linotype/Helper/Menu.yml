@@ -1,0 +1,15 @@
+helper:
+
+  version: 1.0
+  package: ynk
+  
+  name: Menu
+  desc: Get menu from theme map
+  
+  methodes:
+
+    getMenuItems:
+      title: Get Custom data
+      desc: Return array of custom data
+      controller: '@Linotype\Service\Menu\MenuService::getMenuItems'
+      tags: ['controller.service_arguments']

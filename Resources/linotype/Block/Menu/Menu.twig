@@ -1,0 +1,15 @@
+{% set items = linotype( 'helper', 'Menu.getMenuItems', { 'menu_id': 'admin', 'items': items } ) %}
+
+{% if items %}
+
+    <div data-block-id="{{block.uid}}" id="{{block.id}}" class="{{block.class}}" style="{{ margin ? "margin:#{margin};" : '' }}{{ font_size ? "font-size:#{font_size}" : '' }}">
+
+        {% for item in items %}
+
+            {{ linotype( 'block', 'MenuItem', { name : item.name, path: item.path  }) }} {{' '}}
+
+        {% endfor %}
+
+    </div>
+
+{% endif %}

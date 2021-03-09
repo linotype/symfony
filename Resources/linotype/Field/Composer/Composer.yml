@@ -1,0 +1,15 @@
+field:
+
+  version: 1.0
+  package: ynk
+  
+  name: Composer
+  desc: Composer field
+
+  option:
+    blocks: all
+    min: 0
+    max:
+
+  format:
+    type: long_text
