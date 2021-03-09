@@ -1,11 +1,12 @@
 {
-    "name": "linotype/linotype",
+    "name": "linotype/symfony",
     "type": "symfony-bundle",
-    "description": "component monolith",
+    "description": "a component monolith",
     "keywords": [
-        "linotype"
+        "linotype",
+        "symfony"
     ],
-    "homepage": "https://symfony.com",
+    "homepage": "https://linotype.dev",
     "license": "MIT",
     "authors": [
         {
