@@ -1,13 +1,13 @@
 <?php
 
-namespace Linotype\Symfony\Routing;
+namespace Linotype\Bundle\Routing;
 
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Yaml\Yaml;
-use Linotype\Symfony\Core\Linotype;
+use Linotype\Bundle\Core\Linotype;
 
 class ExtraLoader extends Loader
 {
@@ -44,13 +44,13 @@ class ExtraLoader extends Loader
                         {
                             
                             $routes->add( $map_key, new Route( $map['path'], [
-                                '_controller' => 'Linotype\Symfony\Controller\LinotypeController::index',
+                                '_controller' => 'Linotype\Bundle\Controller\LinotypeController::index',
                             ]));
                             
                             //TODO: check with parameters
                             // $routes->add( $map_key, new Route( '/extra/{parameter}', 
                             //     [
-                            //         '_controller' => 'Linotype\Symfony\Controller\MyController::index',
+                            //         '_controller' => 'Linotype\Bundle\Controller\MyController::index',
                             //     ], 
                             //     [
                             //         'parameter' => '\d+',

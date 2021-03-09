@@ -1,6 +1,6 @@
 <?php
 
-namespace Linotype\Symfony\Linotype\Service\Menu\inc;
+namespace Linotype\Bundle\Linotype\Service\Menu\inc;
 
 class MenuHelper {
 

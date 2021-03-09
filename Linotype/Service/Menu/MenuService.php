@@ -1,10 +1,10 @@
 <?php
 
-namespace Linotype\Symfony\Linotype\Service\Menu;
+namespace Linotype\Bundle\Linotype\Service\Menu;
 
-use Linotype\Symfony\Linotype\Service\Menu\inc\MenuHelper;
+use Linotype\Bundle\Linotype\Service\Menu\inc\MenuHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Linotype\Symfony\Core\Linotype;
+use Linotype\Bundle\Core\Linotype;
 
 class MenuService extends AbstractController
 {

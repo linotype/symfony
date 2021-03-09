@@ -1,9 +1,9 @@
 <?php
 
-namespace Linotype\Symfony\Controller;
+namespace Linotype\Bundle\Controller;
 
-use Linotype\Symfony\Service\LinotypeConfig;
-use Linotype\Symfony\Service\LinotypeLoader;
+use Linotype\Bundle\Service\LinotypeConfig;
+use Linotype\Bundle\Service\LinotypeLoader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
