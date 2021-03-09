@@ -16,7 +16,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Ynk\\LinotypeBundle\\": ""
+            "Linotype\\Symfony\\": ""
         },
         "exclude-from-classmap": [
             "/Tests/"
@@ -26,7 +26,8 @@
         "php": ">=7.2.5",
         "symfony/config": "^4.4.17|^5.0",
         "symfony/dependency-injection": "^4.4.17|^5.0",
-        "symfony/http-kernel": "^4.4.17|^5.0"
+        "symfony/http-kernel": "^4.4.17|^5.0",
+        "linotype/core": "^0.0.0"
     },
     "require-dev": {
         "symfony/framework-bundle": "^4.4.17|^5.0",
