@@ -1,6 +1,6 @@
 <?php
 
-namespace Linotype\Bundle\Service;
+namespace Linotype\SymfonyBundle\Service;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

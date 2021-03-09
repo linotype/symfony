@@ -1,8 +1,8 @@
 <?php
 
-namespace Linotype\Bundle\Repository;
+namespace Linotype\SymfonyBundle\Repository;
 
-use Linotype\Bundle\Entity\LinotypeTemplate;
+use Linotype\SymfonyBundle\Entity\LinotypeTemplate;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

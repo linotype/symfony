@@ -1,15 +1,15 @@
 <?php
 
-namespace Linotype\Bundle\Twig;
+namespace Linotype\SymfonyBundle\Twig;
 
-use Linotype\Bundle\Entity\LinotypeMeta;
-use Linotype\Bundle\Repository\LinotypeMetaRepository;
-use Linotype\Bundle\Service\LinotypeConfig;
+use Linotype\SymfonyBundle\Entity\LinotypeMeta;
+use Linotype\SymfonyBundle\Repository\LinotypeMetaRepository;
+use Linotype\SymfonyBundle\Service\LinotypeConfig;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use Twig\Environment;
-use Linotype\Bundle\Core\Linotype;
+use Linotype\SymfonyBundle\Core\Linotype;
 
 class LinotypeTwig extends AbstractExtension
 {

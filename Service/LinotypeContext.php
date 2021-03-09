@@ -1,6 +1,6 @@
 <?php
 
-namespace Linotype\Bundle\Service;
+namespace Linotype\SymfonyBundle\Service;
 
 class LinotypeContext
 {

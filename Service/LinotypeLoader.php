@@ -1,8 +1,8 @@
 <?php
 
-namespace Linotype\Bundle\Service;
+namespace Linotype\SymfonyBundle\Service;
 
-use Linotype\Bundle\Service\LinotypeConfig;
+use Linotype\SymfonyBundle\Service\LinotypeConfig;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;

@@ -1,9 +1,9 @@
 <?php
  
-namespace Linotype\Bundle\Core;
+namespace Linotype\SymfonyBundle\Core;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Linotype\Bundle\Service\LinotypeConfig;
+use Linotype\SymfonyBundle\Service\LinotypeConfig;
 
 class Linotype
 {

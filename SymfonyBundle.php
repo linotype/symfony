@@ -1,14 +1,14 @@
 <?php
 
-namespace Linotype\Bundle;
+namespace Linotype\SymfonyBundle;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Linotype\Bundle\Core\Linotype;
-use Linotype\Bundle\DependencyInjection\LinotypeExtension;
+use Linotype\SymfonyBundle\Core\Linotype;
+use Linotype\SymfonyBundle\DependencyInjection\LinotypeExtension;
 
-class LinotypeBundle extends Bundle 
+class SymfonyBundle extends Bundle 
 {
     public function build(ContainerBuilder $container)
     {
@@ -27,5 +27,5 @@ class LinotypeBundle extends Bundle
     {
         return \dirname(__DIR__);
     }
-    
+
 }

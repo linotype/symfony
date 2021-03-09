@@ -3,7 +3,7 @@
 namespace App\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Linotype\Bundle\Core\Linotype;
+use Linotype\SymfonyBundle\Core\Linotype;
 
 class UserAgentSubscriber implements EventSubscriberInterface
 {
