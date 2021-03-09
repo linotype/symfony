@@ -17,7 +17,7 @@
     "autoload": {
         "psr-4": {
             "Linotype\\Bundle\\LinotypeBundle\\": "",
-            "Linotype\\Helper\\": "../../../../linotype/Helper/"
+            "Linotype\\Helper\\": "../../../linotype/Helper/"
         },
         "exclude-from-classmap": [
             "/Tests/"
