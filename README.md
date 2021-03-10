@@ -48,3 +48,10 @@ return [
 linotype:
   resource: '@LinotypeBundle/Resources/config/routes.yaml'
 ```
+
+```yaml
+// config/packages/twig.yaml
+
+twig:
+    default_path: '%kernel.project_dir%/linotype'
+```
