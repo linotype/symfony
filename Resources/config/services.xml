@@ -6,12 +6,6 @@
     
     <services>
         
-        <!-- Linotype: Inject Helper service -->
-        <prototype namespace="Linotype\Helper\" resource="../../../../../linotype/Helper/*" public="true" autowire="true" autoconfigure="true"/>
-
-        <!-- Linotype: Inject Services for helper -->
-        <!-- <prototype namespace="Linotype\Bundle\LinotypeBundle\Linotype\" resource="../../../src/Linotype/*" public="true" autowire="true" autoconfigure="true"/> -->
-
         <!-- Linotype: Core -->
         <service id="linotype" class="Linotype\Bundle\LinotypeBundle\Core\Linotype" public="true">
             <argument type="service" id="service_container"/>

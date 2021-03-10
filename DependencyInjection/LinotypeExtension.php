@@ -24,8 +24,8 @@ class LinotypeExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator( dirname( __DIR__ ) .'/Resources/config' ));
         $loader->load('services.xml');
 
-        // $loaderCustom = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        // $loaderCustom->load('services.php');
+        $loaderCustom = new PhpFileLoader($container, new FileLocator( dirname( __DIR__ ) .'/Resources/config' ));
+        $loaderCustom->load('services.php');
 
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
