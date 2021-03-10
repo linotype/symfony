@@ -45,6 +45,7 @@
         "symfony/config": "^4.4.17|^5.0",
         "symfony/dependency-injection": "^4.4.17|^5.0",
         "symfony/http-kernel": "^4.4.17|^5.0",
+        "symfony/asset": "5.2.*",
         "linotype/core": "^0|^1"
     },
     "require-dev": {
