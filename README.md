@@ -55,3 +55,27 @@ linotype:
 twig:
     default_path: '%kernel.project_dir%/linotype'
 ```
+
+### Step 3: Install a linotype project
+
+Create a [linotype repository project](https://docs.linotype.dev) and add the following configuration in your composer.json
+
+```json
+// composer.json
+
+"extra": {
+    ...,
+    "installer-types": ["linotype"],
+    "installer-paths": {
+        "linotype/": ["type:linotype"]
+    },
+    ...
+},
+```
+Then, require your linotype repo like the following exemple:
+
+```bash
+$ composer require linotype/starter
+```
+
+

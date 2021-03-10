@@ -72,10 +72,6 @@
         "sort-packages": true
     },
     "extra": {
-        "installer-types": ["linotype"],
-        "installer-paths": {
-            "linotype/": ["type:linotype"]
-        },
         "branch-alias": {
             "dev-main": "1.1-dev"
         }
