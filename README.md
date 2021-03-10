@@ -64,12 +64,10 @@ Create a [linotype repository project](https://docs.linotype.dev) and add the fo
 // composer.json
 
 "extra": {
-    ...,
     "installer-types": ["linotype"],
     "installer-paths": {
         "linotype/": ["type:linotype"]
-    },
-    ...
+    }
 },
 ```
 Then, require your linotype repo like the following exemple:
