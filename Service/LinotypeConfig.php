@@ -572,10 +572,15 @@ class LinotypeConfig
                     foreach ($item['context'] as $context_key => $context) {
                         if (isset($context['field'])) {
 
-                            //get value from db
-                            if ( isset( $context['field'] ) && is_array( $context['field'] ) ) {
-                                $metaEntity = $this->metaRepo->findOneBy([ 'context_key' => $item_key . '__' . $context_key ]);
-                                $context['value'] = $metaEntity ? $metaEntity->getContextValue() : '';
+                            // get value from db
+                            try {
+                                if ( isset( $context['field'] ) && is_array( $context['field'] ) ) {
+                                    $metaEntity = $this->metaRepo->findOneBy([ 'context_key' => $item_key . '__' . $context_key ]);
+                                    $context['value'] = $metaEntity ? $metaEntity->getContextValue() : '';
+                                }
+                            } 
+                            catch(\Exception $e){
+                                $errorMessage = $e->getMessage();
                             }
 
                             $template_context[$item_key . '__' . $context_key] = $context;
