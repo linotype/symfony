@@ -23,29 +23,20 @@
             "/Tests/"
         ]
     },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "LinotypeBundle"
-        }
-    ],
     "require": {
-        "php": ">=7.2.5",
-        "ext-ctype": "*",
-        "ext-iconv": "*",
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/doctrine-bundle": "^2.2",
         "doctrine/orm": "^2.8",
-        "symfony/console": "5.2.*",
-        "symfony/dotenv": "5.2.*",
+        "symfony/console": "^5.2.*",
+        "symfony/dotenv": "^5.2.*",
         "symfony/flex": "^1.3.1",
-        "symfony/framework-bundle": "5.2.*",
-        "symfony/twig-bundle": "5.2.*",
-        "symfony/yaml": "5.2.*",
+        "symfony/framework-bundle": "^5.2.*",
+        "symfony/twig-bundle": "^5.2.*",
+        "symfony/yaml": "^5.2.*",
         "symfony/config": "^4.4.17|^5.0",
         "symfony/dependency-injection": "^4.4.17|^5.0",
         "symfony/http-kernel": "^4.4.17|^5.0",
-        "symfony/asset": "5.2.*",
+        "symfony/asset": "^5.2.*",
         "linotype/core": "^0|^1"
     },
     "require-dev": {
@@ -55,13 +46,13 @@
         "symfony/var-dumper": "^4.4.17|^5.0",
         "symfony/maker-bundle": "^1.29"
     },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
     "extra": {
         "branch-alias": {
             "dev-main": "1.1-dev"
-        },
-        "thanks": {
-            "name": "symfony/ux",
-            "url": "https://github.com/symfony/ux"
         }
     },
     "minimum-stability": "dev"
