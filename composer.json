@@ -28,6 +28,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
+        "oomphinc/composer-installers-extender": "^2.0",
         "doctrine/common": "^2.13 || ^3.0",
         "doctrine/dbal": "^2.10",
         "doctrine/doctrine-bundle": "^1.12|^2.0",
@@ -71,6 +72,10 @@
         "sort-packages": true
     },
     "extra": {
+        "installer-types": ["linotype"],
+        "installer-paths": {
+            "linotype/": ["type:linotype"]
+        },
         "branch-alias": {
             "dev-main": "1.1-dev"
         }
