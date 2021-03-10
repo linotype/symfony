@@ -3,5 +3,5 @@ linotype:
     type: extra
 
 linotype_admin:
-    resource: '../../../src/Controller/'
+    resource: '@LinotypeBundle/Controller/'
     type: annotation
