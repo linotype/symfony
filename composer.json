@@ -25,6 +25,7 @@
     },
     "require": {
         "php": ">=7.2.5",
+        "composer/installers": "~1.0",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
@@ -71,6 +72,9 @@
         "sort-packages": true
     },
     "extra": {
+        "installer-paths": {
+            "linotype": ["linotype/core"]
+        },
         "branch-alias": {
             "dev-main": "1.1-dev"
         }
