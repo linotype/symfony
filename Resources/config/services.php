@@ -10,8 +10,10 @@ return function(ContainerConfigurator $configurator) {
             ->autoconfigure() 
     ;
 
-    if( file_exists( __DIR__  . './../../../../linotype/Helper' ) ) {
-        $services->load('Linotype\\Helper\\', './../../../../linotype/Helper/*');
+    $helperDir = __DIR__  . '/../../../../../linotype/Helper';
+    
+    if ( file_exists( $helperDir ) ) {
+        $services->load('Linotype\\Helper\\', $helperDir . '/*' );
     }
 
 };
