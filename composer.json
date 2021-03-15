@@ -28,7 +28,6 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
-        "oomphinc/composer-installers-extender": "^2.0",
         "doctrine/common": "^2.13 || ^3.0",
         "doctrine/dbal": "^2.10",
         "doctrine/doctrine-bundle": "^1.12|^2.0",
@@ -59,7 +58,7 @@
         "symfony/translation": "^4.4|^5.0",
         "symfony/twig-bundle": "^4.4|^5.0",
         "symfony/uid": "^5.1",
-        "linotype/core": "^0|^1"
+        "linotype/installers": "^1"
     },
     "require-dev": {
         "symfony/framework-bundle": "^4.4.17|^5.0",
