@@ -1,7 +1,7 @@
 {
     "name": "linotype/symfony",
     "type": "symfony-bundle",
-    "description": "a component monolith",
+    "description": "Linotype Symfony bundle",
     "keywords": [
         "linotype",
         "symfony"
