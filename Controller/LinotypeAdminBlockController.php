@@ -6,7 +6,7 @@ use Linotype\Bundle\LinotypeBundle\Entity\LinotypeMeta;
 use Linotype\Bundle\LinotypeBundle\Entity\LinotypeTemplate;
 use Linotype\Bundle\LinotypeBundle\Repository\LinotypeMetaRepository;
 use Linotype\Bundle\LinotypeBundle\Repository\LinotypeTemplateRepository;
-use Linotype\Bundle\LinotypeBundle\Service\LinotypeConfig;
+use Linotype\Core\Service\LinotypeConfig;
 use Linotype\Bundle\LinotypeBundle\Service\LinotypeLoader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

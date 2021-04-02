@@ -2,7 +2,8 @@
 
 namespace Linotype\Bundle\LinotypeBundle\Service;
 
-use Linotype\Bundle\LinotypeBundle\Service\LinotypeConfig;
+use Linotype\Bundle\LinotypeBundle\Core\Linotype;
+use Linotype\Core\Service\LinotypeConfig;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
@@ -12,8 +13,14 @@ class LinotypeLoader
 
     private $twig;
 
-    function __construct( ContainerInterface $container, Environment $twig, LinotypeConfig $linotypeConfig )
+    function __construct( ContainerInterface $container, Environment $twig, LinotypeConfig $linotypeConfig, Linotype $linotype )
     { 
+        $this->linotype = $linotype;
+
+        $this->config = $this->linotype->getConfig();
+
+        $this->index = $this->config->getCurrent()->getTheme()->getInfo()->getTemplate();
+
         $this->linotypeConfig = $linotypeConfig;
         $this->container = $container;
         $this->twig = $twig;
@@ -21,31 +28,26 @@ class LinotypeLoader
 
     public function render( string $interface = 'index', array $context = [], Response $response = null ): Response
     {
-        
-        if ( isset( LinotypeConfig::$config['current']['theme']['twig'] ) && isset( LinotypeConfig::$config['current']['theme']['twig_admin'] ) ) {
+
+        if ( isset( $this->index ) && $this->index ) {
 
             switch( $interface ) {
                 case 'index':
-                    $template = LinotypeConfig::$config['current']['theme']['twig'];
+                    $template = $this->index;
                     break;
                 case 'helper':
-                    //$template = LinotypeConfig::$config['current']['theme']['twig_helper'];
                     $template = '@Linotype/Helper/helper.twig';
                     break;
                 case 'admin':
-                    //$template = LinotypeConfig::$config['current']['theme']['twig_admin'];
                     $template = '@Linotype/Admin/admin.twig';
                     break;
                 case 'admin_edit':
-                    //$template = LinotypeConfig::$config['current']['theme']['twig_admin_edit'];
                     $template = '@Linotype/Admin/admin-edit.twig';
                     break;
                 case 'admin_block_edit':
-                    //$template = LinotypeConfig::$config['current']['theme']['twig_admin_edit'];
                     $template = '@Linotype/Admin/admin-block-edit.twig';
                     break;
                 case 'admin_new':
-                    // $template = LinotypeConfig::$config['current']['theme']['twig_admin_new'];
                     $template = '@Linotype/Admin/admin-new.twig';
                     break;
             }

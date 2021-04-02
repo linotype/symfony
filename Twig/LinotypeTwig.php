@@ -4,12 +4,17 @@ namespace Linotype\Bundle\LinotypeBundle\Twig;
 
 use Linotype\Bundle\LinotypeBundle\Entity\LinotypeMeta;
 use Linotype\Bundle\LinotypeBundle\Repository\LinotypeMetaRepository;
-use Linotype\Bundle\LinotypeBundle\Service\LinotypeConfig;
+use Linotype\Core\Service\LinotypeConfig;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use Twig\Environment;
 use Linotype\Bundle\LinotypeBundle\Core\Linotype;
+use Linotype\Core\Entity\BlockEntity;
+use Linotype\Core\Entity\ModuleEntity;
+use Linotype\Core\Entity\TemplateEntity;
+use Linotype\Core\Entity\ThemeEntity;
+use Symfony\Component\HttpFoundation\Request;
 
 class LinotypeTwig extends AbstractExtension
 {
@@ -25,6 +30,15 @@ class LinotypeTwig extends AbstractExtension
     public function __construct( ContainerInterface $container, Environment $twig, Linotype $linotype, LinotypeMetaRepository $metaRepo )
     {
         $this->linotype = $linotype;
+
+        $this->config = $linotype->getConfig();
+
+        $this->current = $this->config->getCurrent();
+
+        $this->theme = $this->current->getTheme();
+        $this->routes = $this->theme->getMap();
+        $this->templates = $this->config->getTemplates();
+
         $this->container = $container;
         $this->twig = $twig;
         $this->metaRepo = $metaRepo;
@@ -46,14 +60,14 @@ class LinotypeTwig extends AbstractExtension
 
     public function linotype(string $type, string $id = null, $context = [], $field_key = null)
     {
-
+        
+        
         $this->linotype->log('twig:linotype', [ $type, $id, $context ] );
 
         switch ($type) {
 
             case 'theme':
-                $theme = isset( LinotypeConfig::$config['current']['theme'] ) ? LinotypeConfig::$config['current']['theme'] : LinotypeConfig::$config['themes'][$id];
-                return $this->renderTheme( $theme, $context );
+                return $this->renderTheme( $this->theme, $context );
                 break;
             
             case 'template':
@@ -114,29 +128,38 @@ class LinotypeTwig extends AbstractExtension
         }
     }
 
-    public function renderTheme( $theme, $context )
+    public function renderTheme( ThemeEntity $theme, $context = [] )
     {
-        $this->currentTheme = $theme;
-        $template_current = $theme['map'][ LinotypeConfig::$config['context']['route'] ]['template'];
-        return $this->renderTemplate( LinotypeConfig::$config['templates'][ $template_current ], $context );
-    }
-
-    public function renderTemplate($template)
-    {
-        $this->currentTemplate = $template;
         $render = '';
-        if (isset($template['blocks'])) {
-            foreach ($template['blocks'] as $block_key => $block) {
-                $render .= $this->renderBlock($block, [], $block_key );
+        $this->currentTheme = $theme;
+        if ( isset( $this->linotype->getContext()['route'] ) ) {
+            if( isset( $this->routes[ $this->linotype->getContext()['route'] ]['template'] ) ) {
+                $current_template = $this->routes[ $this->linotype->getContext()['route'] ]['template'];
+                if ( $this->config->getTemplates()->findById( $current_template ) ) {
+                    $render .= $this->renderTemplate( $this->config->getTemplates()->findById( $current_template ), $context );
+                }
             }
         }
         return $render;
     }
 
-    public function renderModule($module)
+    public function renderTemplate(TemplateEntity $template)
     {
-        $this->currentModule = $module;
         $render = '';
+        $this->currentTemplate = $template;
+        // dump($this->current->render($template));
+        if ( $templateRender = $this->current->render($template) ) {
+            foreach ( $templateRender as $block) {
+                $render .= $this->renderBlock($block);
+            }
+        }
+        return $render;
+    }
+
+    public function renderModule(ModuleEntity $module)
+    {
+        $render = '';
+        $this->currentModule = $module;
         if (isset($module['blocks'])) {
             foreach ($module['blocks'] as $block_key => $block) {
                 $render .= $this->renderBlock($block, [], $block_key );
@@ -145,11 +168,11 @@ class LinotypeTwig extends AbstractExtension
         return $render;
     }
 
-    public function renderBlock($block, $context_overwrite = [], $block_key = null)
+    public function renderBlock(BlockEntity $block, $context_overwrite = [], $block_key = null)
     {
         $this->currentBlock = $block;
-        $context = $this->renderBlockContext($block, $context_overwrite, $block_key);
-        $render = $this->twig->render($block['twig'], $context);
+        $context = $this->renderBlockContext( $block, $context_overwrite, $block_key );
+        $render = $this->twig->render( $block->getInfo()->getTemplate(), $context);
         return $render;
     }
 
@@ -192,81 +215,76 @@ class LinotypeTwig extends AbstractExtension
         return $render;
     }
 
-    public function renderBlockContext($block, $context_overwrite = [], $block_key = '')
+    public function renderBlockContext(BlockEntity $block, $context_overwrite = [], $block_key = '')
     {
-        
         $context = [];
+        $customCss = [];
+
         $context['block'] = [];
         
-        //create uid from template id, module_key and block_key
-        $uid = $this->currentTemplate['id'] ? $this->currentTemplate['id'] . '__' . $block_key : $block_key;
+        //define key
+        $context['block']['key'] = $block->getKey();
 
-        //create hashed uid
-        $context['block']['uid'] = md5( $uid, false );
+        //define uid 
+        $context['block']['uid'] = $block->getHash();
 
-        //sanitize for block id 
-        $block_uid = strtolower( str_replace( '_', '-', $uid ) );
-
-        //define block id 
-        $context['block']['id'] = $block_uid;
+        //define block css id 
+        $context['block']['id'] = $block->getCssId();
 
         //add class
-        $context['block']['class'] = 'block--' . strtolower( preg_replace('/([a-z])([A-Z])/s','$1-$2', $block['id'] ) );
+        $context['block']['class'] = $block->getCssClass();
 
         //add default values to block context
-        $context['block']['path'] = $block['path'];
-        $context['block']['dir'] = $block['dir'];
+        $context['block']['path'] = $block->getInfo()->getPath();
+        $context['block']['dir'] = $block->getInfo()->getDir();
 
-        $customCss = [];
+        
         //add context value to context
-        if (isset($block['context'])) {
-            foreach ($block['context'] as $context_item_key => $context_item_value) {
+        foreach ( $block->getContext()->getAll() as $context_key => $context_value ) {
 
-                //initialise
-                if (!isset($context_item_value['context'])) $context_item_value['context'] = [];
-                
-                //get value from template
-                if ( isset( $this->currentTemplate['context'][ $block_key  . '__' . $context_item_key ]['value'] ) ) {
-                    $context[$context_item_key] = $this->currentTemplate['context'][ $block_key  . '__' . $context_item_key ]['value'];
-                }
+            $context[$context_key] = $context_value->getValue();
 
-                //if variable not set, create empty value
-                if (!isset($context[$context_item_key])) $context[$context_item_key] = '';
+            // dump( $context_value );
+            // dump( $block->getKey() );
+            
 
-                //if overwrite data exist
-                if (!$context[$context_item_key] && isset($context_overwrite[$context_item_key])) {
-                    $context[$context_item_key] = $context_overwrite[$context_item_key];
-                }
+            // //if overwrite data exist
+            // if (!$context[$context_key] && isset($context_overwrite[$context_key])) {
+            //     $context[$context_key] = $context_overwrite[$context_key];
+            // }
 
-                //if empty use value
-                if (!$context[$context_item_key] && isset($context_item_value['value'])) {
-                    $context[$context_item_key] = $context_item_value['value'];
-                }
+            // //if empty use value
+            // if (!$context[$context_key] && isset($context_value['value'])) {
+            //     $context[$context_key] = $context_value['value'];
+            // }
 
-                //if empty use default
-                if (!$context[$context_item_key] && isset($context_item_value['default'])) {
-                    $context[$context_item_key] = $context_item_value['default'];
-                }
+            // //if empty use default
+            // if (!$context[$context_key] && isset($context_value['default'])) {
+            //     $context[$context_key] = $context_value['default'];
+            // }
 
-                //overwrite if preview mode enabled
-                if (isset(LinotypeConfig::$config['preview']) && LinotypeConfig::$config['preview'] == true && isset($context_item_value['preview'])) {
-                    $context[$context_item_key] = $context_item_value['preview'];
-                }
+            // //overwrite if preview mode enabled
+            // if (isset(LinotypeConfig::$config['preview']) && LinotypeConfig::$config['preview'] == true && isset($context_value['preview'])) {
+            //     $context[$context_key] = $context_value['preview'];
+            // }
 
-                
-                if( isset( $context_item_value['css'] ) ){
-                    if ( isset( $context_item_value['css'] ) && $context_item_value['css'] == true && isset( $context_item_value['value'] ) && $context_item_value['value'] ) {
-                        if ( ! isset( $customCss[ '#' . $block_key ] ) ) $customCss[ '#' . $block_key ] = [];
-                        $customCss[ '#' . $block_key ][ '--' . $context_item_key ] =  $context_item_value['value'];
-                    }
-                }
-              
-                if (isset($context_item_value['dump']) && $context_item_value['dump'] == true) {
-                    dump($context_item_value);
-                }
+            
+            // if( isset( $context_value['css'] ) ){
+            //     if ( isset( $context_value['css'] ) && $context_value['css'] == true && isset( $context_value['value'] ) && $context_value['value'] ) {
+            //         if ( ! isset( $customCss[ '#' . $block_key ] ) ) $customCss[ '#' . $block_key ] = [];
+            //         $customCss[ '#' . $block_key ][ '--' . $context_key ] =  $context_value['value'];
+            //     }
+            // }
+            
+            // if (isset($context_value['dump']) && $context_value['dump'] == true) {
+            //     dump($context_value);
+            // }
 
-            }
         }
+
+        // dump( $context );
+
+                return $context;
 
         //add custom css
         $this->linotype_style_add( $customCss );

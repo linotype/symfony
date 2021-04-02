@@ -11,9 +11,7 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Linotype\Bundle\LinotypeBundle\Core\Linotype;
-use Linotype\Bundle\LinotypeBundle\DataCollector\LinotypeCollector;
-use Linotype\Bundle\LinotypeBundle\Service\MyService;
+
 
 class LinotypeExtension extends Extension
 {

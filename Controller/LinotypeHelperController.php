@@ -2,7 +2,7 @@
 
 namespace Linotype\Bundle\LinotypeBundle\Controller;
 
-use Linotype\Bundle\LinotypeBundle\Service\LinotypeConfig;
+use Linotype\Core\Service\LinotypeConfig;
 use Linotype\Bundle\LinotypeBundle\Service\LinotypeLoader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
