@@ -27,7 +27,7 @@ class LinotypeTwig extends AbstractExtension
     public $currentField;
     public $currentBlock;
 
-    public function __construct( ContainerInterface $container, Environment $twig, Linotype $linotype, LinotypeMetaRepository $metaRepo )
+    public function __construct( ContainerInterface $container, Environment $twig, Linotype $linotype )
     {
         $this->linotype = $linotype;
 
@@ -41,7 +41,6 @@ class LinotypeTwig extends AbstractExtension
 
         $this->container = $container;
         $this->twig = $twig;
-        $this->metaRepo = $metaRepo;
 
         $this->linotype->log('twig');
 
@@ -96,19 +95,7 @@ class LinotypeTwig extends AbstractExtension
         }
     }
 
-    public function linotype_admin(string $type, string $id = '', array $context = [], $field_key = null )
-    {
-        switch ($type) {
-
-            case 'block':
-                return $this->renderAdminBlock( LinotypeConfig::$config['blocks'][$id], $context, $field_key );
-                break;
     
-            default:
-                return '[error]';
-                break;
-        }
-    }
 
     public function linotype_render(string $type, array $item = [], array $context = [])
     {
@@ -168,50 +155,19 @@ class LinotypeTwig extends AbstractExtension
         return $render;
     }
 
-    public function renderBlock(BlockEntity $block, $context_overwrite = [], $block_key = null)
-    {
-        $this->currentBlock = $block;
-        $context = $this->renderBlockContext( $block, $context_overwrite, $block_key );
-        $render = $this->twig->render( $block->getInfo()->getTemplate(), $context);
-        return $render;
-    }
-
-    public function renderAdminBlock($block, $context_overwrite = [], $field_key = null)
-    {
-        $render = '';
-        $context = $this->renderBlockContext($block, $context_overwrite);
-        
-        if (isset($block['context'])) {
-            foreach ($block['context'] as $context_key => $context) {
-                if ( isset( $context['field_id'] ) ) {
-
-                    $value = isset( $context_overwrite[$context_key]['value'] ) ? $context_overwrite[$context_key]['value'] : '';
-                    if ( is_array( $value ) ) $value = json_encode( $value );
-
-                    $render .= $this->renderField( LinotypeConfig::$config['fields'][ $context['field_id'] ], [
-                        'title' => $context['title'],
-                        'info' => "",
-                        'id' => 'field-' . $field_key . '-' . $context_key,
-                        'key' => $context_key,
-                        'uid' => 'field-' . $field_key . '-' . $context_key,
-                        'form' => [
-                            'name' => 'field-' . $field_key . '-' . $context_key,
-                            'value' => $value,
-                        ]
-                    ] );
-                    // $render .= $this->renderField( LinotypeConfig::$config['fields'][ $context['field']['field_id'] ], $context );
-                }
-                // $render .= json_encode( $context_key );
-            }
-        }
-        return $render;
-    }
-
     public function renderField($field, $context_overwrite = [], $field_key = null)
     {   
         $this->currentField = $field;
         $context = $this->renderFieldContext($field, $context_overwrite, $field_key);
         $render = $this->twig->render($field['twig'], $context);
+        return $render;
+    }
+
+    public function renderBlock(BlockEntity $block, $context_overwrite = [], $block_key = null)
+    {
+        $this->currentBlock = $block;
+        $context = $this->renderBlockContext( $block, $context_overwrite, $block_key );
+        $render = $this->twig->render( $block->getInfo()->getTemplate(), $context);
         return $render;
     }
 
@@ -250,41 +206,137 @@ class LinotypeTwig extends AbstractExtension
 
         }
 
-
-        //add custom css
-        // $this->linotype_style_add( $customCss );
-
         //set childrends
-        // if (isset($block['childrens'])) {
-        //     $context['childrens'] = $block['childrens'];
-        // } else {
-        //     $context['childrens'] = [];
-        // }
+        $children = '';
+        if ( $block->getChildren() ) {
+            foreach( $block->getChildren() as $child_key => $child ) {
+                $children .= $this->renderBlock($child);
+            }
+        }
+        $context['children'] = $children;
 
         //proccess default variable from context values if require
-        // foreach ($context as $context_key => $context_value) {
-        //     if (is_string($context_value) && strpos($context_value, '{{') !== false) {
+        foreach ($context as $context_key => $context_value) {
+            if (is_string($context_value) && strpos($context_value, '{{') !== false) {
 
-        //         $context[$context_key] = str_replace(
-        //             [
-        //                 '{{path}}', '{{ path }}',
-        //                 '{{dir}}', '{{ dir }}',
-        //             ],
-        //             [
-        //                 $context['block']['path'], $context['block']['path'],
-        //                 $context['block']['dir'], $context['block']['dir'],
-        //             ],
-        //             $context_value
-        //         );
-        //     }
-        // }
+                $context[$context_key] = str_replace(
+                    [
+                        '{{path}}', '{{ path }}',
+                        '{{dir}}', '{{ dir }}',
+                    ],
+                    [
+                        $context['block']['path'], $context['block']['path'],
+                        $context['block']['dir'], $context['block']['dir'],
+                    ],
+                    $context_value
+                );
+            }
+        }
 
-        // if (isset(LinotypeConfig::$config['debug']) && LinotypeConfig::$config['debug'] === true) {
-        //     dump($context);
-        // }
+        if (isset(LinotypeConfig::$config['debug']) && LinotypeConfig::$config['debug'] === true) {
+            dump($context);
+        }
 
         return $context;
     }
+
+    public function getHelper( $id, $context = [] )
+    {
+        $target = explode('.', $id );
+        $helper_id = isset($target[0]) ? $target[0] : false;
+        $function = isset($target[1]) ? $target[1] : 'get';
+        if ( isset( $this->config->getHelpers()->gethelper($helper_id)->getmethode()[$function]['controller'] ) ) {
+            $controller = explode('::', $this->config->getHelpers()->gethelper($helper_id)->getmethode()[$function]['controller'] );
+            $class = isset($controller[0]) ? $controller[0] : false;
+            $function = isset($controller[1]) ? $controller[1] : 'get';
+            if ( $class ) {
+                return $this->container->get( $class )->$function( $context );   
+            }
+        }
+    }
+
+    
+
+    public function linotype_style()
+    {
+        $css = '';
+        foreach( LinotypeConfig::$config['current']['css'] as $cssId => $cssVar ) {
+            $css .=  $cssId . ' {' . PHP_EOL;
+            foreach( $cssVar as $cssVarKey => $cssVarVal ) {
+                $css .=  '  ' . $cssVarKey . ': ' . $cssVarVal . ';' . PHP_EOL;
+            }
+            $css .=  '}' . PHP_EOL;
+        };
+        return '<style id="linotype-variable-css">' . PHP_EOL . '' . $css . '</style>';
+    }
+
+    public function linotype_script()
+    {
+        return '<script id="linotype-variable-js" type="text/javascript">' . PHP_EOL . 'var linotype = ' . json_encode( LinotypeConfig::$config['current']['js'], JSON_PRETTY_PRINT ) . ';' . PHP_EOL . '</script>';
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* ADMIN */
+
+
+    public function linotype_admin(string $type, string $id = '', array $context = [], $field_key = null )
+    {
+        switch ($type) {
+
+            case 'block':
+                return $this->renderAdminBlock( LinotypeConfig::$config['blocks'][$id], $context, $field_key );
+                break;
+    
+            default:
+                return '[error]';
+                break;
+        }
+    }
+
+    public function renderAdminBlock($block, $context_overwrite = [], $field_key = null)
+    {
+        $render = '';
+        $context = $this->renderBlockContext($block, $context_overwrite);
+        
+        if (isset($block['context'])) {
+            foreach ($block['context'] as $context_key => $context) {
+                if ( isset( $context['field_id'] ) ) {
+
+                    $value = isset( $context_overwrite[$context_key]['value'] ) ? $context_overwrite[$context_key]['value'] : '';
+                    if ( is_array( $value ) ) $value = json_encode( $value );
+
+                    $render .= $this->renderField( LinotypeConfig::$config['fields'][ $context['field_id'] ], [
+                        'title' => $context['title'],
+                        'info' => "",
+                        'id' => 'field-' . $field_key . '-' . $context_key,
+                        'key' => $context_key,
+                        'uid' => 'field-' . $field_key . '-' . $context_key,
+                        'form' => [
+                            'name' => 'field-' . $field_key . '-' . $context_key,
+                            'value' => $value,
+                        ]
+                    ] );
+                    // $render .= $this->renderField( LinotypeConfig::$config['fields'][ $context['field']['field_id'] ], $context );
+                }
+                // $render .= json_encode( $context_key );
+            }
+        }
+        return $render;
+    }
+
+    
 
     public function renderFieldContext($field, $context_overwrite = [], $field_key = '')
     {
@@ -367,44 +419,21 @@ class LinotypeTwig extends AbstractExtension
         return $context;
     }
 
-    public function getHelper( $id, $context = [] )
-    {
-        $target = explode('.', $id );
-        $helper_id = isset($target[0]) ? $target[0] : false;
-        $function = isset($target[1]) ? $target[1] : 'get';
-        if ( isset( $this->config->getHelpers()->gethelper($helper_id)->getmethode()[$function]['controller'] ) ) {
-            $controller = explode('::', $this->config->getHelpers()->gethelper($helper_id)->getmethode()[$function]['controller'] );
-            $class = isset($controller[0]) ? $controller[0] : false;
-            $function = isset($controller[1]) ? $controller[1] : 'get';
-            if ( $class ) {
-                return $this->container->get( $class )->$function( $context );   
-            }
-        }
-    }
 
-    public function linotype_style_add($styles)
-    {
-        foreach($styles as $style_key => $style){
-            LinotypeConfig::$config['current']['css'][$style_key] = $style; 
-        }
-    }
 
-    public function linotype_style()
-    {
-        $css = '';
-        foreach( LinotypeConfig::$config['current']['css'] as $cssId => $cssVar ) {
-            $css .=  $cssId . ' {' . PHP_EOL;
-            foreach( $cssVar as $cssVarKey => $cssVarVal ) {
-                $css .=  '  ' . $cssVarKey . ': ' . $cssVarVal . ';' . PHP_EOL;
-            }
-            $css .=  '}' . PHP_EOL;
-        };
-        return '<style id="linotype-variable-css">' . PHP_EOL . '' . $css . '</style>';
-    }
 
-    public function linotype_script()
-    {
-        return '<script id="linotype-variable-js" type="text/javascript">' . PHP_EOL . 'var linotype = ' . json_encode( LinotypeConfig::$config['current']['js'], JSON_PRETTY_PRINT ) . ';' . PHP_EOL . '</script>';
-    }
+
+
+    /** TO DELETE */
+
+
+    // public function linotype_style_add($styles)
+    // {
+    //     foreach($styles as $style_key => $style){
+    //         LinotypeConfig::$config['current']['css'][$style_key] = $style; 
+    //     }
+    // }
+
+
 
 }
