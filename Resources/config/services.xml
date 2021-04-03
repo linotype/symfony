@@ -7,7 +7,9 @@
     <services>
         
         <!-- Service: Core -->
-        <service id="linotype.core" class="Linotype\Core\LinotypeCore" public="true"></service>
+        <service id="linotype.core" class="Linotype\Core\LinotypeCore" public="true">
+            <argument type="service" id="linotype.repo.meta"/>
+        </service>
         <service alias="linotype.core" id="Linotype\Core\LinotypeCore" public="false"/>
 
         <!-- Service: Config -->
@@ -21,6 +23,7 @@
             <argument type="service" id="service_container"/>
             <argument type="service" id="linotype.config"/>
             <argument type="service" id="linotype.core"/>
+            <argument type="service" id="linotype.repo.meta"/>
         </service>
         <service alias="linotype" id="Linotype\Bundle\LinotypeBundle\Core\Linotype" public="true"/>
 
