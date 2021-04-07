@@ -2,8 +2,6 @@
 
 namespace Linotype\Bundle\LinotypeBundle\Twig;
 
-use Linotype\Bundle\LinotypeBundle\Entity\LinotypeMeta;
-use Linotype\Bundle\LinotypeBundle\Repository\LinotypeMetaRepository;
 use Linotype\Core\Service\LinotypeConfig;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Twig\Extension\AbstractExtension;
@@ -14,18 +12,26 @@ use Linotype\Core\Entity\BlockEntity;
 use Linotype\Core\Entity\ModuleEntity;
 use Linotype\Core\Entity\TemplateEntity;
 use Linotype\Core\Entity\ThemeEntity;
-use Symfony\Component\HttpFoundation\Request;
 
 class LinotypeTwig extends AbstractExtension
 {
     public $twig;
 
     public $currentTheme;
+
     public $currentTemplate;
+    
     public $currentModule;
+    
     public $currentHelper;
+    
     public $currentField;
+    
     public $currentBlock;
+
+    public $currentJs = [];
+
+    public $currentCss = [];
 
     public function __construct( ContainerInterface $container, Environment $twig, Linotype $linotype )
     {
@@ -59,7 +65,6 @@ class LinotypeTwig extends AbstractExtension
 
     public function linotype(string $type, string $id = null, $context = [], $field_key = null)
     {
-        
         
         $this->linotype->log('twig:linotype', [ $type, $id, $context ] );
 
@@ -134,7 +139,6 @@ class LinotypeTwig extends AbstractExtension
     {
         $render = '';
         $this->currentTemplate = $template;
-        // dump($this->current->render($template));
         if ( $templateRender = $this->current->render($template) ) {
             foreach ( $templateRender as $block) {
                 $render .= $this->renderBlock($block);
@@ -206,6 +210,9 @@ class LinotypeTwig extends AbstractExtension
 
         }
 
+        $this->currentJs = $block->getCustomJs() ? array_merge( $this->currentJs, $block->getCustomJs() ) : $this->currentJs;
+        $this->currentCss = $block->getCustomCss() ? array_merge( $this->currentCss, $block->getCustomCss() ) : $this->currentCss;
+
         //set childrends
         $children = '';
         if ( $block->getChildren() ) {
@@ -255,24 +262,30 @@ class LinotypeTwig extends AbstractExtension
         }
     }
 
-    
-
     public function linotype_style()
     {
-        $css = '';
-        foreach( LinotypeConfig::$config['current']['css'] as $cssId => $cssVar ) {
-            $css .=  $cssId . ' {' . PHP_EOL;
-            foreach( $cssVar as $cssVarKey => $cssVarVal ) {
-                $css .=  '  ' . $cssVarKey . ': ' . $cssVarVal . ';' . PHP_EOL;
-            }
-            $css .=  '}' . PHP_EOL;
-        };
-        return '<style id="linotype-variable-css">' . PHP_EOL . '' . $css . '</style>';
+        if ( $this->currentCss ) {
+            $css = '';
+            foreach( $this->currentCss as $cssId => $cssVar ) {
+                $css .=  $cssId . ' {' . PHP_EOL;
+                foreach( $cssVar as $cssVarKey => $cssVarVal ) {
+                    $css .=  '  ' . $cssVarKey . ': ' . $cssVarVal . ';' . PHP_EOL;
+                }
+                $css .=  '}' . PHP_EOL;
+            };
+            return '<style id="linotype-variable-css">' . PHP_EOL . '' . $css . '</style>';
+        } else {
+            return '';
+        }
     }
 
     public function linotype_script()
     {
-        return '<script id="linotype-variable-js" type="text/javascript">' . PHP_EOL . 'var linotype = ' . json_encode( LinotypeConfig::$config['current']['js'], JSON_PRETTY_PRINT ) . ';' . PHP_EOL . '</script>';
+        if ( $this->currentJs ) {
+            return '<script id="linotype-variable-js" type="text/javascript">' . PHP_EOL . 'var linotype = ' . json_encode( $this->currentJs, JSON_PRETTY_PRINT ) . ';' . PHP_EOL . '</script>';
+        } else {
+            return '';
+        }
     }
 
 
