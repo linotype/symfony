@@ -2,8 +2,10 @@
  
 namespace Linotype\Bundle\LinotypeBundle\Core;
 
+use Linotype\Bundle\LinotypeBundle\Repository\LinotypeMetaRepository;
+use Linotype\Core\LinotypeCore;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Linotype\Bundle\LinotypeBundle\Service\LinotypeConfig;
+
 
 class Linotype
 {
@@ -12,17 +14,20 @@ class Linotype
 
     private $config;
 
+    private $context;
+
+    private $loader;
+
     private $logs;
 
     private $projectDir;
 
-    public function __construct( ContainerInterface $container, LinotypeConfig $config ) 
+    public function __construct( ContainerInterface $container, LinotypeCore $linotype, LinotypeMetaRepository $metaRepo ) 
     {
         $this->container = $container;
-        $this->config = $config;
+        $this->config = $linotype->getConfig($metaRepo);
         $this->projectDir = $this->container->getParameter('kernel.project_dir');
         $this->log('Linotype core');
-        // dump( $this->config->getLinotypeSettings() );
     }
 
     public function getDir()
@@ -40,9 +45,26 @@ class Linotype
         return $this->logs;
     }
 
+    public function getLoader()
+    {
+        return $this->loader;
+    }
+
     public function getConfig()
     {
         return $this->config;
+    }
+
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    public function setContext($context = [])
+    {
+        $this->context = $context;
+
+        return $this->context;
     }
 
 }

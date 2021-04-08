@@ -11,9 +11,7 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Linotype\Bundle\LinotypeBundle\Core\Linotype;
-use Linotype\Bundle\LinotypeBundle\DataCollector\LinotypeCollector;
-use Linotype\Bundle\LinotypeBundle\Service\MyService;
+
 
 class LinotypeExtension extends Extension
 {
@@ -30,17 +28,6 @@ class LinotypeExtension extends Extension
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
         
-        // $definition = $container->getDefinition('linotype.my_service');
-        // $definition->setArgument(0, $config['debug']);
-        // $definition->setArgument(1, $config['preview']);
-
-        // $definition = $container->getDefinition('linotype.config');
-        // $definition->setArgument(0, $container->getParameter('kernel.project_dir') );
-
-        // $config['rootDir'] = $container->getParameter('kernel.project_dir');
-        // $config['linotypeDir'] = $config['rootDir'] . '/linotype';
-
-
     }
 
     public function getAlias()

@@ -9,14 +9,13 @@ use Linotype\Bundle\LinotypeBundle\Core\Linotype;
 class MenuService extends AbstractController
 {
 
-    public function __construct( MenuHelper $helper, Linotype $linotype ){
-        $this->linotype = $linotype;
+    public function __construct( MenuHelper $helper ){
+    
         $this->helper = $helper;
     }
 
     public function getMenuItems( $context = [] )
     {
-        $this->linotype->log('MenuService from bundle');
 
         //return static items if exist
         if ( isset( $context['items'] ) && ! empty( $context['items'] ) ) {

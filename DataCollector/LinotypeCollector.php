@@ -2,7 +2,6 @@
 
 namespace Linotype\Bundle\LinotypeBundle\DataCollector;
 
-use Linotype\Bundle\LinotypeBundle\Service\LinotypeConfig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;

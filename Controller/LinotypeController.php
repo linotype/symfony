@@ -2,7 +2,7 @@
 
 namespace Linotype\Bundle\LinotypeBundle\Controller;
 
-use Linotype\Bundle\LinotypeBundle\Service\LinotypeConfig;
+use Linotype\Bundle\LinotypeBundle\Core\Linotype;
 use Linotype\Bundle\LinotypeBundle\Service\LinotypeLoader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,9 +11,10 @@ use Symfony\Component\HttpFoundation\Response;
 class LinotypeController extends AbstractController
 {   
     
-    function __construct( LinotypeLoader $linotype )
+    function __construct( Linotype $linotype, LinotypeLoader $loader )
     {
         $this->linotype = $linotype;
+        $this->loader = $loader;
     }
 
     /**
@@ -22,7 +23,8 @@ class LinotypeController extends AbstractController
      */
     public function index( Request $request ): Response
     {
-        LinotypeConfig::setContext([
+        
+        $this->linotype->setContext([
             'route' => $request->attributes->get('_route'),
             'href' => $request->getSchemeAndHttpHost() . $request->getRequestUri(),
             'location' => $request->getRequestUri(),
@@ -34,7 +36,7 @@ class LinotypeController extends AbstractController
             'params' => $request->getQueryString(),
         ]);
 
-        return $this->linotype->render('index');
+        return $this->loader->render('index');
     }
 
 }

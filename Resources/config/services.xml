@@ -6,10 +6,17 @@
     
     <services>
         
+        <!-- Service: Core -->
+        <service id="linotype.core" class="Linotype\Core\LinotypeCore" public="true">
+            <argument type="service" id="linotype.repo.meta"/>
+        </service>
+        <service alias="linotype.core" id="Linotype\Core\LinotypeCore" public="false"/>
+
         <!-- Linotype: Core -->
         <service id="linotype" class="Linotype\Bundle\LinotypeBundle\Core\Linotype" public="true">
             <argument type="service" id="service_container"/>
-            <argument type="service" id="linotype.config"/>
+            <argument type="service" id="linotype.core"/>
+            <argument type="service" id="linotype.repo.meta"/>
         </service>
         <service alias="linotype" id="Linotype\Bundle\LinotypeBundle\Core\Linotype" public="true"/>
 
@@ -19,18 +26,11 @@
             <tag name="data_collector" template="@Linotype/Collector/linotype.html.twig" id="linotype" />
         </service>
 
-        <!-- Service: Config -->
-        <service id="linotype.config" class="Linotype\Bundle\LinotypeBundle\Service\LinotypeConfig" public="true">
-            <argument type="service" id="service_container"/>
-            <argument type="service" id="linotype.repo.meta"/>
-        </service>
-        <service alias="linotype.config" id="Linotype\Bundle\LinotypeBundle\Service\LinotypeConfig" public="false"/>
-
         <!-- Service: Loader -->
         <service id="linotype.loader" class="Linotype\Bundle\LinotypeBundle\Service\LinotypeLoader" public="true">
             <argument type="service" id="service_container"/>
             <argument type="service" id="twig"/>
-            <argument type="service" id="linotype.config"/>
+            <argument type="service" id="linotype"/>
         </service>
         <service alias="linotype.loader" id="Linotype\Bundle\LinotypeBundle\Service\LinotypeLoader" public="false"/>
         
@@ -58,10 +58,6 @@
         </service>
         <service alias="linotype.repo.meta" id="Linotype\Bundle\LinotypeBundle\Repository\LinotypeMetaRepository" public="false"/>
 
-        <!-- Service: Test -->
-        <service id="linotype.my_service" class="Linotype\Bundle\LinotypeBundle\Service\MyService" public="true"/>
-        <service alias="linotype.my_service" id="Linotype\Bundle\LinotypeBundle\Service\MyService" public="false"/>
-
         <!-- Service: Twig -->
         <service id="linotype.twig" class="Linotype\Bundle\LinotypeBundle\Twig\LinotypeTwig" public="true">
             <argument type="service" id="service_container"/>
@@ -72,6 +68,7 @@
         </service>
         <service alias="linotype.twig" id="Linotype\Bundle\LinotypeBundle\Twig\LinotypeTwig" public="false"/>
 
+
         <!-- Controller: linotype -->
         <service id="linotype.controller" class="Linotype\Bundle\LinotypeBundle\Controller\LinotypeController" public="true">
             <call method="setContainer">
@@ -79,6 +76,7 @@
             </call>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
+            <argument type="service" id="linotype"/>
             <argument type="service" id="linotype.loader"/>
         </service>
         <service alias="linotype.controller" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeController" public="true"/>
@@ -90,20 +88,10 @@
             </call>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
+            <argument type="service" id="linotype"/>
             <argument type="service" id="linotype.loader"/>
         </service>
         <service alias="linotype.controller.admin" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeAdminController" public="true"/>
-
-        <!-- Controller: admin block -->
-        <service id="linotype.controller.admin.block" class="Linotype\Bundle\LinotypeBundle\Controller\LinotypeAdminBlockController" public="true">
-            <call method="setContainer">
-                <argument type="service" id="Psr\Container\ContainerInterface"/>
-            </call>
-            <tag name="container.service_subscriber"/>
-            <tag name="controller.service_arguments"/>
-            <argument type="service" id="linotype.loader"/>
-        </service>
-        <service alias="linotype.controller.admin.block" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeAdminBlockController" public="true"/>
 
         <!-- Controller: helper -->
         <service id="linotype.controller.helper" class="Linotype\Bundle\LinotypeBundle\Controller\LinotypeHelperController" public="true">
@@ -112,6 +100,7 @@
             </call>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
+            <argument type="service" id="linotype"/>
             <argument type="service" id="linotype.loader"/>
         </service>
         <service alias="linotype.controller.helper" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeHelperController" public="true"/>

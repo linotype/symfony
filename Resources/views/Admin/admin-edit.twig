@@ -15,8 +15,9 @@
             <div class="linotype-admin">
 
                 <h1><a href="/">Website</a> | <a href="/admin">Administration</a> > Edit</h1>
-            
-                {% if success == 'true' %}
+
+                edit
+                {# {% if success == 'true' %}
                     <div class="message success">Success</div>
                 {% elseif success == 'false' %}
                     <div class="message error">Error</div>
@@ -28,7 +29,6 @@
 
                     {% for key, field in fields %}
 
-                        {# {{dump()}} #}
                         {{ linotype('field',field.name, field, key ) }}
 
                     {% endfor %}
@@ -37,7 +37,7 @@
 
                     {{ form_widget(form.Save) }}
 
-                {{ form_end(form, {'render_rest': false}) }}
+                {{ form_end(form, {'render_rest': false}) }} #}
 
             </div>
 

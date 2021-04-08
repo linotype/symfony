@@ -43,21 +43,12 @@ class ExtraLoader extends Loader
                         if ( isset( $map['path'] ) && $map['path']  )
                         {
                             
-                            $routes->add( $map_key, new Route( $map['path'], [
-                                '_controller' => 'Linotype\Bundle\LinotypeBundle\Controller\LinotypeController::index',
-                            ]));
+                            $routes->add( $map_key, new Route( $map['path'], 
+                                [
+                                    '_controller' => 'Linotype\Bundle\LinotypeBundle\Controller\LinotypeController::index',
+                                ]
+                            ));
                             
-                            //TODO: check with parameters
-                            // $routes->add( $map_key, new Route( '/extra/{parameter}', 
-                            //     [
-                            //         '_controller' => 'Linotype\Bundle\LinotypeBundle\Controller\MyController::index',
-                            //     ], 
-                            //     [
-                            //         'parameter' => '\d+',
-                            //     ]
-                            // ) );
-
-                            //$routes->add( $map_key, $map['path'] )->controller([LinotypeController::class, 'index']);
                         }
                     }
                 }
