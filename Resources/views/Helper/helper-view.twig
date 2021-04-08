@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Admin{% endblock %}</title>
+        <title>{% block title %}Linotype{% endblock %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <script async="" defer="" src="{{ asset('assets/js/backend.js') }}"></script>
         {% block stylesheets %}
@@ -12,10 +12,13 @@
     </head>
     <body>
         {% block body %}
-            <div class="linotype-admin">
-                <h1><a href="/">Website</a> | <a href="/admin">Administration</a> > New</h1>
+        <div class="linotype-admin linotype-helper">
+            <h1><a href="/">Website</a> | <a href="/admin">Administration</a> | Linotype</h1>
+            <div class="row">
+                <a href="/linotype">back</a>
+                view
             </div>
-            new
+        </div>
         {% endblock %}
         {% block javascripts %}
             <script type="text/javascript">var linotype = [];</script>

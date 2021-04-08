@@ -3,7 +3,6 @@
 namespace Linotype\Bundle\LinotypeBundle\Service;
 
 use Linotype\Bundle\LinotypeBundle\Core\Linotype;
-use Linotype\Core\Service\LinotypeConfig;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
@@ -13,7 +12,7 @@ class LinotypeLoader
 
     private $twig;
 
-    function __construct( ContainerInterface $container, Environment $twig, LinotypeConfig $linotypeConfig, Linotype $linotype )
+    function __construct( ContainerInterface $container, Environment $twig, Linotype $linotype )
     { 
         $this->linotype = $linotype;
 
@@ -21,7 +20,6 @@ class LinotypeLoader
 
         $this->index = $this->config->getCurrent()->getTheme()->getInfo()->getTemplate();
 
-        $this->linotypeConfig = $linotypeConfig;
         $this->container = $container;
         $this->twig = $twig;
     }
@@ -38,6 +36,12 @@ class LinotypeLoader
                 case 'helper':
                     $template = '@Linotype/Helper/helper.twig';
                     break;
+                case 'helper_list':
+                    $template = '@Linotype/Helper/helper-list.twig';
+                    break;
+                case 'helper_view':
+                    $template = '@Linotype/Helper/helper-view.twig';
+                    break;
                 case 'admin':
                     $template = '@Linotype/Admin/admin.twig';
                     break;
@@ -50,9 +54,12 @@ class LinotypeLoader
                 case 'admin_new':
                     $template = '@Linotype/Admin/admin-new.twig';
                     break;
+                default:
+                    $template = $interface;
+                    break;
             }
 
-            $content = $this->renderView( $template, ['linotype' => LinotypeConfig::$config ] + $context );
+            $content = $this->renderView( $template, $context );
 
             if (null === $response) {
                 $response = new Response();
