@@ -14,7 +14,8 @@ class ExtraLoader extends Loader
 
     public function __construct( Linotype $linotype ){
         $this->linotype = $linotype;
-        $this->map = $linotype->getConfig()->getCurrent()->getTheme()->getMap();
+        $this->theme = $linotype->getConfig()->getCurrent()->getTheme();
+        $this->map = $this->theme ? $this->theme->getMap() : [];
     }
 
     public function load($resource, string $type = null)

@@ -18,7 +18,8 @@ class LinotypeLoader
 
         $this->config = $this->linotype->getConfig();
 
-        $this->index = $this->config->getCurrent()->getTheme()->getInfo()->getTemplate();
+        $this->theme = $this->config->getCurrent()->getTheme();
+        $this->index = $this->theme ? $this->theme->getInfo()->getTemplate() : '@Linotype/index.twig';
 
         $this->container = $container;
         $this->twig = $twig;
