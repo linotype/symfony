@@ -38,7 +38,7 @@ class LinotypeTwig extends AbstractExtension
         $this->config = $linotype->getConfig();
         $this->current = $this->config->getCurrent();
         $this->theme = $this->current->getTheme();
-        $this->routes = $this->theme->getMap();
+        $this->map = $this->theme ? $this->theme->getMap() : [];
         $this->templates = $this->config->getTemplates();
         $this->modules = $this->config->getModules();
         $this->blocks = $this->config->getBlocks();
@@ -119,8 +119,8 @@ class LinotypeTwig extends AbstractExtension
         $render = '';
         $this->currentTheme = $theme;
         if ( isset( $this->linotype->getContext()['route'] ) ) {
-            if( isset( $this->routes[ $this->linotype->getContext()['route'] ]['template'] ) ) {
-                $current_template = $this->routes[ $this->linotype->getContext()['route'] ]['template'];
+            if( isset( $this->map[ $this->linotype->getContext()['route'] ]['template'] ) ) {
+                $current_template = $this->map[ $this->linotype->getContext()['route'] ]['template'];
                 if ( $this->config->getTemplates()->findById( $current_template ) ) {
                     $render .= $this->renderTemplate( $this->config->getTemplates()->findById( $current_template ), $context );
                 }

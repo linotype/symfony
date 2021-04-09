@@ -26,7 +26,8 @@ class LinotypeAdminController extends AbstractController
         $this->linotype = $linotype;
         $this->config = $this->linotype->getConfig();
         $this->current = $this->config->getCurrent();
-        $this->map = $this->current->getTheme()->getMap();
+        $this->theme = $this->current->getTheme();
+        $this->map = $this->theme ? $this->theme->getMap() : [];
         $this->blocks = $this->config->getBlocks()->getAll();
         $this->fields = $this->config->getFields()->getAll();
         $this->helpers = $this->config->getHelpers()->getAll();

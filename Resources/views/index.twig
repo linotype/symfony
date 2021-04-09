@@ -1,0 +1,23 @@
+{% apply spaceless %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Website{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <script async="" defer="" src="{{ asset('assets/js/frontend.js') }}"></script>
+        {% block stylesheets %}
+            <link href="{{ asset('assets/css/frontend.css') }}" rel="stylesheet">
+        {% endblock %}
+    </head>
+    <body>
+        {% block body %}
+            {{ linotype('theme') }}
+        {% endblock %}
+        {{ linotype_script() }}
+        {{ linotype_style() }}
+        {% block javascripts %}
+        {% endblock %}
+    </body>
+</html>
+{% endapply %}
