@@ -3,10 +3,8 @@
 namespace Linotype\Bundle\LinotypeBundle\Routing;
 
 use Symfony\Component\Config\Loader\Loader;
-use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Yaml\Yaml;
 use Linotype\Bundle\LinotypeBundle\Core\Linotype;
 
 class ExtraLoader extends Loader
@@ -16,6 +14,7 @@ class ExtraLoader extends Loader
 
     public function __construct( Linotype $linotype ){
         $this->linotype = $linotype;
+        $this->map = $linotype->getConfig()->getCurrent()->getTheme()->getMap();
     }
 
     public function load($resource, string $type = null)
@@ -25,37 +24,17 @@ class ExtraLoader extends Loader
         }
         
         $routes = new RouteCollection();
-
-        $linotypeDir = $this->linotype->getDir();
-
-        if ( file_exists( $linotypeDir . '/linotype.yml' ) ) 
+        foreach( $this->map as $map_key => $map ) 
         {
-            $settings = Yaml::parse( file_get_contents( $linotypeDir . '/linotype.yml' ) );
-    
-            if ( isset( $settings['linotype']['theme'] ) && $settings['linotype']['theme'] && file_exists( $linotypeDir . '/Theme/' . $settings['linotype']['theme'] . '.yml' ) )
+            if ( isset( $map['path'] ) && $map['path']  )
             {
-                $theme = Yaml::parse( file_get_contents( $linotypeDir . '/Theme/' . $settings['linotype']['theme'] . '.yml' ) );
+                $routes->add( $map_key, new Route( $map['path'], 
+                    [ '_controller' => 'Linotype\Bundle\LinotypeBundle\Controller\LinotypeController::index' ]
+                ));
                 
-                if( isset( $theme['theme']['map'] ) ) 
-                {
-                    foreach( $theme['theme']['map'] as $map_key => $map ) 
-                    {
-                        if ( isset( $map['path'] ) && $map['path']  )
-                        {
-                            
-                            $routes->add( $map_key, new Route( $map['path'], 
-                                [
-                                    '_controller' => 'Linotype\Bundle\LinotypeBundle\Controller\LinotypeController::index',
-                                ]
-                            ));
-                            
-                        }
-                    }
-                }
             }
-    
         }
-
+        
         $this->isLoaded = true;
 
         return $routes;
