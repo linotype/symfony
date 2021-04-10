@@ -10,15 +10,6 @@ of the Composer documentation.
 Applications that use Symfony Flex
 ----------------------------------
 
-Open a command console, enter your project directory and execute:
-
-```console
-$ composer require linotype/symfony
-```
-
-Applications that don't use Symfony Flex
-----------------------------------------
-
 ### Step 1: Download the Bundle
 
 Open a command console, enter your project directory and execute the
@@ -28,19 +19,17 @@ following command to download the latest stable version of this bundle:
 $ composer require linotype/symfony
 ```
 
-### Step 2: Enable the Bundle
+### Step 2: Install a linotype project starter
 
-Then, enable the bundle by adding it to the list of registered bundles
-in the `config/bundles.php` file of your project:
+Create a [linotype repository project](https://docs.linotype.dev) or use the official starter
 
-```php
-// config/bundles.php
-
-return [
-    // ...
-    Linotype\Bundle\LinotypeBundle\LinotypeBundle::class => ['all' => true],
-];
+```console
+$ composer require linotype/starter
 ```
+
+### Step 3: Edit config files
+
+Create route config file to enable linotype routes system
 
 ```yaml
 // config/routes/linotype.yaml
@@ -49,31 +38,11 @@ linotype:
   resource: '@LinotypeBundle/Resources/config/routes.yaml'
 ```
 
+Change the default twig path to linotype project directory
+
 ```yaml
 // config/packages/twig.yaml
 
 twig:
     default_path: '%kernel.project_dir%/linotype'
 ```
-
-### Step 3: Install a linotype project
-
-Create a [linotype repository project](https://docs.linotype.dev) and add the following configuration in your composer.json
-
-```json
-// composer.json
-
-"extra": {
-    "installer-types": ["linotype"],
-    "installer-paths": {
-        "linotype/": ["type:linotype"]
-    }
-},
-```
-Then, require your linotype repo like the following exemple:
-
-```bash
-$ composer require linotype/starter
-```
-
-
