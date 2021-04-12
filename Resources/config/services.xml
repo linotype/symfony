@@ -17,6 +17,8 @@
             <argument type="service" id="service_container"/>
             <argument type="service" id="linotype.core"/>
             <argument type="service" id="linotype.repo.meta"/>
+            <argument type="service" id="linotype.repo.template"/>
+            <argument type="service" id="linotype.repo.option"/>
         </service>
         <service alias="linotype" id="Linotype\Bundle\LinotypeBundle\Core\Linotype" public="true"/>
 
@@ -51,12 +53,6 @@
             <argument type="service" id="Doctrine\Common\Persistence\ManagerRegistry"/>
         </service>
         <service alias="linotype.repo.template" id="Linotype\Bundle\LinotypeBundle\Repository\LinotypeTemplateRepository" public="false"/>
-
-        <!-- Service: LinotypeMetaRepository -->
-        <service id="linotype.repo.meta" class="Linotype\Bundle\LinotypeBundle\Repository\LinotypeMetaRepository" public="true">
-            <argument type="service" id="Doctrine\Common\Persistence\ManagerRegistry"/>
-        </service>
-        <service alias="linotype.repo.meta" id="Linotype\Bundle\LinotypeBundle\Repository\LinotypeMetaRepository" public="false"/>
 
         <!-- Service: Twig -->
         <service id="linotype.twig" class="Linotype\Bundle\LinotypeBundle\Twig\LinotypeTwig" public="true">
