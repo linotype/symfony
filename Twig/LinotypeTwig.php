@@ -8,6 +8,7 @@ use Twig\TwigFunction;
 use Twig\Environment;
 use Linotype\Bundle\LinotypeBundle\Core\Linotype;
 use Linotype\Core\Entity\BlockEntity;
+use Linotype\Core\Entity\FieldEntity;
 use Linotype\Core\Entity\ModuleEntity;
 use Linotype\Core\Entity\TemplateEntity;
 use Linotype\Core\Entity\ThemeEntity;
@@ -153,11 +154,11 @@ class LinotypeTwig extends AbstractExtension
         return $render;
     }
 
-    public function renderField($field, $context_overwrite = [], $field_key = null)
+    public function renderField(FieldEntity $field, $context_overwrite = [], $field_key = null)
     {   
         $this->currentField = $field;
         $context = $this->renderFieldContext($field, $context_overwrite, $field_key);
-        $render = $this->twig->render($field['twig'], $context);
+        $render = $this->twig->render( $field->getInfo()->getTemplate(), $context);
         return $render;
     }
 
@@ -341,61 +342,65 @@ class LinotypeTwig extends AbstractExtension
 
     
 
-    public function renderFieldContext($field, $context_overwrite = [], $field_key = '')
+    public function renderFieldContext(FieldEntity $field, $context_overwrite = [], $field_key = '')
     {
-        // dump( [$field, $context_overwrite ] );
         $context = [];
+        $customCss = [];
+
         $context['field'] = [];
         
-        if ( isset( $context_overwrite['id'] ) ) {
-            $field_key = $context_overwrite['id'];
-        }
+        //define key
+        $context['field']['value'] = $field->getValue();
 
-        if ( isset( $context_overwrite['title'] ) ) {
-            $context['title'] = $context_overwrite['title'];
-        }
-        if ( isset( $context_overwrite['info'] ) ) {
-            $context['info'] = $context_overwrite['info'];
-        }
-        if ( isset( $context_overwrite['require'] ) ) {
-            $context['require'] = $context_overwrite['require'];
-        }
-        if ( isset( $context_overwrite['key'] ) ) {
-            $context['field']['key'] = $context_overwrite['key'];
-        }
-        
-        if ( isset( $context_overwrite['form'] ) ) {
-            $context['field']['form'] = $context_overwrite['form'];
-        }
-        
-        //add context value to context
-        if ( isset( $context_overwrite['option'] ) ) {
-            $context['option'] = $field['option'];
-            foreach ( $context_overwrite['option'] as $option_key => $option_value ) {
-                $context['option'][$option_key] = $option_value;
-            }
-        } else {
-            $context['option'] = $field['option'];
-        }
+        //define key
+        $context['field']['key'] = $field->getKey();
 
-        //create uid from template id, module_key and field_key
-        $uid = $this->currentTemplate['id'] ? $this->currentTemplate['id'] . '__' . $field_key : $field_key;
+        //define uid 
+        $context['field']['uid'] = $field->getHash();
 
-        //create hashed uid
-        $context['field']['uid'] = md5( $uid, false );
-
-        //sanitize for field id 
-        $field_uid = strtolower( str_replace( '_', '-', $uid ) );
-
-        //define field id 
-        $context['field']['id'] = $field_uid;
+        //define field css id 
+        $context['field']['id'] = $field->getCssId();
 
         //add class
-        $context['field']['class'] = 'field--' . strtolower( preg_replace('/([a-z])([A-Z])/s','$1-$2', $field['id'] ) );
+        $context['field']['class'] = $field->getCssClass();
 
         //add default values to field context
-        $context['field']['path'] = $field['path'];
-        $context['field']['dir'] = $field['dir'];
+        $context['field']['path'] = $field->getInfo()->getPath();
+        $context['field']['dir'] = $field->getInfo()->getDir();
+
+        //define require context title
+        $context['title'] = $field->getTitle();
+
+        //define require context help
+        $context['help'] = $field->getHelp();
+
+        //define require context require
+        $context['require'] = $field->getRequire();
+
+        //set context
+        foreach ( $field->getOption() as $context_key => $context_value ) {
+
+            //add context value to twig variables
+            $context[$context_key] = $context_value;
+
+            //use overwrite context exist
+            // if ( isset( $context_overwrite[$context_key] ) && $context_overwrite[$context_key] ) {
+            //     $context[$context_key] = $context_overwrite[$context_key];
+            // }
+
+        }
+
+        // $this->currentJs = $block->getCustomJs() ? array_merge( $this->currentJs, $block->getCustomJs() ) : $this->currentJs;
+        // $this->currentCss = $block->getCustomCss() ? array_merge( $this->currentCss, $block->getCustomCss() ) : $this->currentCss;
+
+        // //set childrends
+        // $children = '';
+        // if ( $block->getChildren() ) {
+        //     foreach( $block->getChildren() as $child_key => $child ) {
+        //         $children .= $this->renderBlock($child);
+        //     }
+        // }
+        // $context['children'] = $children;
 
         //proccess default variable from context values if require
         foreach ($context as $context_key => $context_value) {
@@ -407,16 +412,14 @@ class LinotypeTwig extends AbstractExtension
                         '{{dir}}', '{{ dir }}',
                     ],
                     [
-                        $context['field']['path'], $context['field']['path'],
-                        $context['field']['dir'], $context['field']['dir'],
+                        $context['block']['path'], $context['block']['path'],
+                        $context['block']['dir'], $context['block']['dir'],
                     ],
                     $context_value
                 );
             }
         }
 
-       
-        
         return $context;
     }
 

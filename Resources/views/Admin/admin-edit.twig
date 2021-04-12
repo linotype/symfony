@@ -16,28 +16,19 @@
 
                 <h1><a href="/">Website</a> | <a href="/admin">Administration</a> > Edit</h1>
 
-                edit
-                {# {% if success == 'true' %}
+                {% if success == 'true' %}
                     <div class="message success">Success</div>
                 {% elseif success == 'false' %}
                     <div class="message error">Error</div>
                 {% endif %}
-                
-                {{ form_start(form) }}
-                
-                    {{ form_errors(form) }}
 
+                <form action="{{form_action}}" enctype="multipart/form-data" method="POST">
                     {% for key, field in fields %}
-
-                        {{ linotype('field',field.name, field, key ) }}
-
+                        {{ linotype_render( 'field', field ) }}
                     {% endfor %}
-
-                    {{ form_widget(form._token) }}
-
-                    {{ form_widget(form.Save) }}
-
-                {{ form_end(form, {'render_rest': false}) }} #}
+                    </br>
+                    <input type="submit" value="Submit">
+                </form> 
 
             </div>
 
