@@ -69,11 +69,13 @@ class LinotypeAdminController extends AbstractController
      
         $map_id = $this->map[ $request->get('map_id') ]['template'];
         $template = $this->templates->findById( $map_id );
+        $template->setKey($request->get('map_id'));
         $blocks = $this->current->render( $template );
 
         $data = [];
         $fields = [];
         foreach( $blocks as $block ) {
+
             foreach( $block->getContext()->getAll() as $context ) {
                 if ( $context->getPersist() == 'meta' ) {
                     
@@ -85,13 +87,32 @@ class LinotypeAdminController extends AbstractController
 
                 }
             }
+
+            if ( $block->getChildren() ) {
+                foreach( $block->getChildren() as $child_key => $child ) {
+
+                    foreach( $child->getContext()->getAll() as $context ) {
+                        if ( $context->getPersist() == 'meta' ) {
+                            
+                            $field = $context->getFieldEntity();
+        
+                            $fields[ $field->getKey() ] = $field;
+                                
+                            $data[ $field->getKey() ] = $request->get( $field->getKey() );
+        
+                        }
+                    }
+
+                }
+            }
+
         }
 
         if ( $request->getMethod() == 'POST' ) {
 
             //check if template ref exist
             $templateEntityExist = $templateRepo->findOneBy(['template_key' => $request->get('map_id') ]);
-
+            
             //create template database if not exist
             if( $templateEntityExist == null ) {
                 $templateEntity = new LinotypeTemplate();
@@ -104,7 +125,7 @@ class LinotypeAdminController extends AbstractController
             }
             
             foreach( $data as $context_key => $context_value ) {
-                    
+                
                 //check if template ref exist
                 $metaEntityExist = $metaRepo->findOneBy([ 'context_key' => $context_key, 'template_id' => $templateEntity->getId() ]);
 
