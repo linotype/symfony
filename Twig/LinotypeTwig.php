@@ -16,19 +16,7 @@ use Linotype\Core\Entity\ThemeEntity;
 class LinotypeTwig extends AbstractExtension
 {
     public $twig;
-
-    public $currentTheme;
-
-    public $currentTemplate;
     
-    public $currentModule;
-    
-    public $currentHelper;
-    
-    public $currentField;
-    
-    public $currentBlock;
-
     public $currentJs = [];
 
     public $currentCss = [];
@@ -118,12 +106,25 @@ class LinotypeTwig extends AbstractExtension
     public function renderTheme( ThemeEntity $theme, $context = [] )
     {
         $render = '';
-        $this->currentTheme = $theme;
+
+        //get current route from controller
         if ( isset( $this->linotype->getContext()['route'] ) ) {
+
+            //check if current route has template
             if( isset( $this->map[ $this->linotype->getContext()['route'] ]['template'] ) ) {
+                
+                //get current route template
                 $current_template = $this->map[ $this->linotype->getContext()['route'] ]['template'];
-                if ( $this->config->getTemplates()->findById( $current_template ) ) {
-                    $render .= $this->renderTemplate( $this->config->getTemplates()->findById( $current_template ), $context );
+
+                //get template object
+                if ( $template = $this->config->getTemplates()->findById( $current_template ) ) {
+
+                    //set map key as unique template key (used to find doctrine ref)
+                    $template->setKey( $this->linotype->getContext()['route'] );
+
+                    //render template
+                    $render .= $this->renderTemplate( $template, $context );
+                
                 }
             }
         }
@@ -133,9 +134,14 @@ class LinotypeTwig extends AbstractExtension
     public function renderTemplate(TemplateEntity $template)
     {
         $render = '';
-        $this->currentTemplate = $template;
+
+        //render template object
         if ( $templateRender = $this->current->render($template) ) {
+            
+            //loop blocks from template render
             foreach ( $templateRender as $block) {
+
+                //render block
                 $render .= $this->renderBlock($block);
             }
         }
@@ -144,29 +150,28 @@ class LinotypeTwig extends AbstractExtension
 
     public function renderModule(ModuleEntity $module)
     {
-        $render = '';
-        $this->currentModule = $module;
-        if (isset($module['blocks'])) {
-            foreach ($module['blocks'] as $block_key => $block) {
-                $render .= $this->renderBlock($block, [], $block_key );
-            }
-        }
-        return $render;
+        //TODO: render block from rendered module
     }
 
     public function renderField(FieldEntity $field, $context_overwrite = [], $field_key = null)
     {   
-        $this->currentField = $field;
+        //render field context
         $context = $this->renderFieldContext($field, $context_overwrite, $field_key);
+
+        //render field template with context 
         $render = $this->twig->render( $field->getInfo()->getTemplate(), $context);
+
         return $render;
     }
 
     public function renderBlock(BlockEntity $block, $context_overwrite = [], $block_key = null)
     {
-        $this->currentBlock = $block;
+        //render block context
         $context = $this->renderBlockContext( $block, $context_overwrite, $block_key );
+
+        //render block template with context 
         $render = $this->twig->render( $block->getInfo()->getTemplate(), $context);
+
         return $render;
     }
 
