@@ -98,6 +98,7 @@
             <tag name="controller.service_arguments"/>
             <argument type="service" id="linotype"/>
             <argument type="service" id="linotype.loader"/>
+            <argument type="service" id="profiler"/>
         </service>
         <service alias="linotype.controller.helper" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeHelperController" public="true"/>
 

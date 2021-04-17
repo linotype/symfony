@@ -55,7 +55,12 @@ class LinotypeAdminController extends AbstractController
             'params' => $request->getQueryString(),
         ]);
 
+        $breadcrumb = [];
+        $breadcrumb[] = ['title' => 'linotype.dev', 'link' => '/'];
+        $breadcrumb[] = ['title' => 'Dashboard', 'link' => ''];
+
         return $this->loader->render('admin', [
+            'breadcrumb' => $breadcrumb,
             'map' => $this->map
         ]);
     }
@@ -154,7 +159,14 @@ class LinotypeAdminController extends AbstractController
             
         }
 
+        $breadcrumb = [];
+        $breadcrumb[] = ['title' => 'linotype.dev', 'link' => '/'];
+        $breadcrumb[] = ['title' => $template->getname(), 'link' => ''];
+
         return $this->loader->render('admin_edit', [
+            'breadcrumb' => $breadcrumb,
+            'map' => $this->map,
+            'title' => $template->getname(),
             'form_action' => '/admin/' . $request->get('map_id') . '/edit',
             'form_data' => [
                 'field_custom_name' => $request->get('field_custom_name'),

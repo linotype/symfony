@@ -1,0 +1,13 @@
+<ul class="breadcrumb">
+    {% for item in breadcrumb %}
+        {% if item.link %}
+            <li class="breadcrumb-item">
+                <a class="text-primary" href="{{item.link}}"><b>{{item.title}}</b></a>
+            </li>
+        {% else %}
+            <li class="breadcrumb-item c-default">
+                {{item.title}}
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>

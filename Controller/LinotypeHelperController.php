@@ -7,22 +7,27 @@ use Linotype\Bundle\LinotypeBundle\Service\LinotypeLoader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Routing\Annotation\Route;
 
 class LinotypeHelperController extends AbstractController
 {   
     
-    function __construct( Linotype $linotype, LinotypeLoader $loader )
+    function __construct( Linotype $linotype, LinotypeLoader $loader, Profiler $profiler )
     {
         $this->linotype = $linotype;
         $this->config = $this->linotype->getConfig();
-        $this->blocks = $this->config->getBlocks()->getAll();
-        $this->fields = $this->config->getFields()->getAll();
-        $this->helpers = $this->config->getHelpers()->getAll();
-        $this->modules = $this->config->getModules()->getAll();
-        $this->templates = $this->config->getTemplates()->getAll();
-        $this->themes = $this->config->getThemes()->getAll();
+        $this->current = $this->config->getCurrent();
+        $this->theme = $this->current->getTheme();
+        $this->map = $this->theme ? $this->theme->getMap() : [];
+        $this->blocks = $this->config->getBlocks();
+        $this->fields = $this->config->getFields();
+        $this->helpers = $this->config->getHelpers();
+        $this->modules = $this->config->getModules();
+        $this->templates = $this->config->getTemplates();
+        $this->themes = $this->config->getThemes();
         $this->loader = $loader;
+        $this->profiler = $profiler;
     }
 
     /**
@@ -44,7 +49,7 @@ class LinotypeHelperController extends AbstractController
         ]);
         
         $block = [ 'link' => '/linotype/blocks', 'items' => [] ];
-        foreach( $this->blocks as $item ) {
+        foreach( $this->blocks->getAll() as $item ) {
             $block['items'][] = [
                 'name' => $item->getName(),
                 'desc' => $item->getDesc(),
@@ -55,7 +60,7 @@ class LinotypeHelperController extends AbstractController
         }
 
         $field = [ 'link' => '/linotype/fields', 'items' => [] ];
-        foreach( $this->fields as $item ) {
+        foreach( $this->fields->getAll() as $item ) {
             $field['items'][] = [
                 'name' => $item->getName(),
                 'desc' => $item->getDesc(),
@@ -66,7 +71,7 @@ class LinotypeHelperController extends AbstractController
         }
 
         $helper = [ 'link' => '/linotype/helpers', 'items' => [] ];
-        foreach( $this->helpers as $item ) {
+        foreach( $this->helpers->getAll() as $item ) {
             $helper['items'][] = [
                 'name' => $item->getName(),
                 'desc' => $item->getDesc(),
@@ -77,7 +82,7 @@ class LinotypeHelperController extends AbstractController
         }
 
         $module = [ 'link' => '/linotype/modules', 'items' => [] ];
-        foreach( $this->modules as $item ) {
+        foreach( $this->modules->getAll() as $item ) {
             $module['items'][] = [
                 'name' => $item->getName(),
                 'desc' => $item->getDesc(),
@@ -88,7 +93,7 @@ class LinotypeHelperController extends AbstractController
         }
 
         $template = [ 'link' => '/linotype/templates', 'items' => [] ];
-        foreach( $this->templates as $item ) {
+        foreach( $this->templates->getAll() as $item ) {
             $template['items'][] = [
                 'name' => $item->getName(),
                 'desc' => $item->getDesc(),
@@ -99,7 +104,7 @@ class LinotypeHelperController extends AbstractController
         }
 
         $theme = [ 'link' => '/linotype/themes', 'items' => [] ];
-        foreach( $this->themes as $item ) {
+        foreach( $this->themes->getAll() as $item ) {
             $theme['items'][] = [
                 'name' => $item->getName(),
                 'desc' => $item->getDesc(),
@@ -108,8 +113,14 @@ class LinotypeHelperController extends AbstractController
                 'link' => '/linotype/themes/' . $item->getSlug(),
             ];
         }
+        
+        $breadcrumb = [];
+        $breadcrumb[] = ['title' => 'linotype.dev', 'link' => '/'];
+        $breadcrumb[] = ['title' => 'linotype', 'link' => ''];
 
         return $this->loader->render('helper', [
+            'breadcrumb' => $breadcrumb,
+            'map' => $this->map,
             'block' => $block,
             'field' => $field,
             'helper' => $helper,
@@ -137,8 +148,42 @@ class LinotypeHelperController extends AbstractController
             'params' => $request->getQueryString(),
         ]);
 
+        switch( $request->get('type') ) {
+            case 'blocks':
+                $title = 'Blocks';
+                $items = $this->blocks;
+                break;
+            case 'fields':
+                $title = 'Fields';
+                $items = $this->fields;
+                break;
+            case 'helpers':
+                $title = 'Helpers';
+                $items = $this->helpers;
+                break;
+            case 'modules':
+                $title = 'Modules';
+                $items = $this->modules;
+                break;
+            case 'templates':
+                $title = 'Templates';
+                $items = $this->templates;
+                break;
+            case 'themes':
+                $title = 'Themes';
+                $items = $this->themes;
+                break;
+        }
+        
+
+        $breadcrumb = [];
+        $breadcrumb[] = ['title' => 'linotype.dev', 'link' => '/'];
+        $breadcrumb[] = ['title' => 'linotype', 'link' => '/linotype'];
+        $breadcrumb[] = ['title' => $title, 'link' => ''];
+
         return $this->loader->render('helper_list', [
-            
+            'breadcrumb' => $breadcrumb,
+            'map' => $this->map,
         ]);
     }
 
@@ -160,8 +205,132 @@ class LinotypeHelperController extends AbstractController
             'params' => $request->getQueryString(),
         ]);
 
+        $type = null;
+        $title = 'error';
+        $link = '/error';
+        $items = [];
+        $object = null;
+        $object_title = '';
+        
+        switch( $request->get('type') ) {
+            case 'blocks':
+                $type = $request->get('type');
+                $title = 'Blocks';
+                $link = '/linotype/blocks';
+                $items = $this->blocks;
+                $object = $items->findBySlug( $request->get('slug') );
+                $object_title = $object->getName();
+                break;
+            case 'fields':
+                $type = $request->get('type');
+                $title = 'Fields';
+                $link = '/linotype/fields';
+                $items = $this->fields;
+                $object = $items->findBySlug( $request->get('slug') );
+                $object_title = $object->getName();
+                break;
+            case 'helpers':
+                $type = $request->get('type');
+                $title = 'Helpers';
+                $link = '/linotype/helpers';
+                $items = $this->helpers;
+                $object = $items->findBySlug( $request->get('slug') );
+                $object_title = $object->getName();
+                break;
+            case 'modules':
+                $type = $request->get('type');
+                $title = 'Modules';
+                $link = '/linotype/modules';
+                $items = $this->modules;
+                $object = $items->findBySlug( $request->get('slug') );
+                $object_title = $object->getName();
+                break;
+            case 'templates':
+                $type = $request->get('type');
+                $title = 'Templates';
+                $link = '/linotype/templates';
+                $items = $this->templates;
+                $object = $items->findBySlug( $request->get('slug') );
+                $object_title = $object->getName();
+                break;
+            case 'themes':
+                $type = $request->get('type');
+                $title = 'Themes';
+                $link = '/linotype/themes';
+                $items = $this->themes;
+                $object = $items->findBySlug( $request->get('slug') );
+                $object_title = $object->getName();
+                break;
+        }
+
+        $breadcrumb = [];
+        $breadcrumb[] = ['title' => 'linotype.dev', 'link' => '/'];
+        $breadcrumb[] = ['title' => 'linotype', 'link' => '/linotype'];
+        $breadcrumb[] = ['title' => $title, 'link' => $link];
+        $breadcrumb[] = ['title' => $object_title, 'link' => ''];
+
         return $this->loader->render('helper_view', [
-            
+            'breadcrumb' => $breadcrumb,
+            'map' => $this->map,
+            'type' => $type,
+            'id' => $object->getSlug(),
+            'name' => $object->getName(),
+            'desc' => $object->getDesc(),
+        ]);
+    }
+
+
+    /**
+     * Linotype helper
+     * @Route("/linotype/{type}/{slug}/viewer", name="helper_viewer")
+     */
+    public function viewer( Request $request ): Response
+    {
+        $this->profiler->disable();
+   
+        switch( $request->get('type') ) {
+            case 'blocks':
+                $type = 'block';
+                $items = $this->blocks;
+                $object = $items->findBySlug( $request->get('slug') );
+                $id = $object->getId();
+                break;
+            case 'fields':
+                $type = 'field';
+                $items = $this->fields;
+                $object = $items->findBySlug( $request->get('slug') );
+                $id = $object->getId();
+                break;
+            case 'helpers':
+                $type = 'helper';
+                $items = $this->helpers;
+                $object = $items->findBySlug( $request->get('slug') );
+                $id = $object->getId();
+                break;
+            case 'modules':
+                $type = 'module';
+                $items = $this->modules;
+                $object = $items->findBySlug( $request->get('slug') );
+                $id = $object->getId();
+                break;
+            case 'templates':
+                $type = 'template';
+                $items = $this->templates;
+                $object = $items->findBySlug( $request->get('slug') );
+                $id = $object->getId();
+                break;
+            case 'themes':
+                $type = 'theme';
+                $items = $this->themes;
+                $object = $items->findBySlug( $request->get('slug') );
+                $id = $object->getId();
+                break;
+        }
+        
+        return $this->loader->render('viewer', [
+            'type' => $type,
+            'id' => $id,
+            'object' => $object,
         ]);
     }
     

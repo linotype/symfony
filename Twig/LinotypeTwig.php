@@ -80,7 +80,7 @@ class LinotypeTwig extends AbstractExtension
                 break;
 
             default:
-                return '[error]';
+                return 'no data';
                 break;
         }
     }
@@ -98,7 +98,7 @@ class LinotypeTwig extends AbstractExtension
                 break;
     
             default:
-                return '[error]';
+                return 'no data';
                 break;
         }
     }

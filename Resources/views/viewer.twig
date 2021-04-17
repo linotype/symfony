@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Viewer</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        {% if type == 'field' %}
+            <script async="" defer="" src="{{ asset('assets/js/backend.js') }}"></script>
+            <link href="{{ asset('assets/css/backend.css') }}" rel="stylesheet">
+        {% else %}
+            <script async="" defer="" src="{{ asset('assets/js/frontend.js') }}"></script>
+            <link href="{{ asset('assets/css/frontend.css') }}" rel="stylesheet">
+        {% endif %} 
+        <style>
+            html{
+                background-image: linear-gradient(45deg, #F3F3F3 25%, transparent 25%), linear-gradient(-45deg, #F3F3F3 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #F3F3F3 75%), linear-gradient(-45deg, transparent 75%, #F3F3F3 75%)!important;
+                background-size: 16px 16px!important;
+                background-position: 0 0, 0 8px, 8px -8px, -8px 0px!important;
+                overflow:hidden!important;
+                padding:0px!important;
+                margin:0px!important;
+            }
+            body{ 
+                position:relative!important;
+                background:transparent!important;
+                overflow:visible!important;
+                padding:0px!important;
+                margin:80px!important;
+                height: auto!important;
+            }
+            .linotype-system-top-left {
+            position:absolute;
+            left:-1px;
+            top:-2500px;
+            height:5000px;
+            width:1px;
+            background-image: linear-gradient(rgba(0,0,0,0.3) 33%, rgba(255,255,255,0) 0%);
+            background-position: right;
+            background-size: 1px 10px;
+            background-repeat: repeat-y;
+            }
+            .linotype-system-top-right {
+            position:absolute;
+            right:-1px;
+            top:-2500px;
+            height:5000px;
+            width:1px;
+            background-image: linear-gradient(rgba(0,0,0,0.3) 33%, rgba(255,255,255,0) 0%);
+            background-position: right;
+            background-size: 1px 10px;
+            background-repeat: repeat-y;
+            }
+            .linotype-system-bottom-right {
+            position:absolute;
+            left:-2500px;
+            right:0;
+            top:-1px;
+            width:5000px;
+            height:1px;
+            background-image: linear-gradient( to right, rgba(0,0,0,0.3) 33%, rgba(255,255,255,0) 0%);
+            background-position: bottom;
+            background-size: 10px 1px;
+            background-repeat: repeat-x;
+            }
+            .linotype-system-bottom-left {
+            position:absolute;
+            left:-2500px;
+            right:0;
+            bottom:-1px;
+            width:5000px;
+            height:1px;
+            background-image: linear-gradient( to right, rgba(0,0,0,0.3) 33%, rgba(255,255,255,0) 0%);
+            background-position: bottom;
+            background-size: 10px 1px;
+            background-repeat: repeat-x;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="linotype-system-top-left"></div>
+        <div class="linotype-system-top-right"></div>
+        <div class="linotype-system-bottom-left"></div>
+        <div class="linotype-system-bottom-right"></div>
+        {{ linotype( type, id ) }}
+        {{ linotype_script() }}
+        {{ linotype_style() }}
+    </body>
+</html>

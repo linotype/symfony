@@ -34,26 +34,29 @@ class LinotypeLoader
                 case 'index':
                     $template = $this->index;
                     break;
+                case 'viewer':
+                    $template = '@Linotype/viewer.twig';
+                    break;    
                 case 'helper':
-                    $template = '@Linotype/Helper/helper.twig';
+                    $template = '@Linotype/System/index.twig';
                     break;
                 case 'helper_list':
-                    $template = '@Linotype/Helper/helper-list.twig';
+                    $template = '@Linotype/System/list.twig';
                     break;
                 case 'helper_view':
-                    $template = '@Linotype/Helper/helper-view.twig';
+                    $template = '@Linotype/System/view.twig';
                     break;
                 case 'admin':
-                    $template = '@Linotype/Admin/admin.twig';
+                    $template = '@Linotype/Admin/dashboard.twig';
                     break;
                 case 'admin_edit':
-                    $template = '@Linotype/Admin/admin-edit.twig';
+                    $template = '@Linotype/Admin/edit.twig';
                     break;
-                case 'admin_block_edit':
-                    $template = '@Linotype/Admin/admin-block-edit.twig';
+                case 'admin_editor':
+                    $template = '@Linotype/Admin/editor.twig';
                     break;
                 case 'admin_new':
-                    $template = '@Linotype/Admin/admin-new.twig';
+                    $template = '@Linotype/Admin/new.twig';
                     break;
                 default:
                     $template = $interface;

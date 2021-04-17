@@ -1,0 +1,27 @@
+{% extends "@Linotype/admin.twig" %}
+
+{% block content %}
+
+    <h1 class="text-dark">Edit {{title}} Page</h1>
+
+    {% if success == 'true' %}
+        <div class="toast toast-success">
+            <button class="btn btn-clear float-right"></button>
+            Success
+        </div>
+    {% elseif success == 'false' %}
+        <div class="toast toast-error">
+            <button class="btn btn-clear float-right"></button>
+            Error
+        </div>
+    {% endif %}
+
+    <form action="{{form_action}}" enctype="multipart/form-data" method="POST">
+        {% for key, field in fields %}
+            {{ linotype_render( 'field', field ) }}
+        {% endfor %}
+        </br>
+        <input type="submit" value="Submit">
+    </form> 
+
+{% endblock %}
