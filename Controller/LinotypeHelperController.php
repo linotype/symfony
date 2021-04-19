@@ -286,7 +286,7 @@ class LinotypeHelperController extends AbstractController
      */
     public function viewer( Request $request ): Response
     {
-        $this->profiler->disable();
+        if ( $request->get('mode') == 'iframe' ) $this->profiler->disable();
    
         switch( $request->get('type') ) {
             case 'blocks':
@@ -328,6 +328,60 @@ class LinotypeHelperController extends AbstractController
         }
         
         return $this->loader->render('viewer', [
+            'type' => $type,
+            'id' => $id,
+            'object' => $object,
+        ]);
+    }
+
+    /**
+     * Linotype helper
+     * @Route("/linotype/{type}/{slug}/preview", name="helper_preview")
+     */
+    public function preview( Request $request ): Response
+    {
+        if ( $request->get('mode') == 'iframe' ) $this->profiler->disable();
+   
+        switch( $request->get('type') ) {
+            case 'blocks':
+                $type = 'block';
+                $items = $this->blocks;
+                $object = $items->findBySlug( $request->get('slug') );
+                $id = $object->getId();
+                break;
+            case 'fields':
+                $type = 'field';
+                $items = $this->fields;
+                $object = $items->findBySlug( $request->get('slug') );
+                $id = $object->getId();
+                break;
+            case 'helpers':
+                $type = 'helper';
+                $items = $this->helpers;
+                $object = $items->findBySlug( $request->get('slug') );
+                $id = $object->getId();
+                break;
+            case 'modules':
+                $type = 'module';
+                $items = $this->modules;
+                $object = $items->findBySlug( $request->get('slug') );
+                $id = $object->getId();
+                break;
+            case 'templates':
+                $type = 'template';
+                $items = $this->templates;
+                $object = $items->findBySlug( $request->get('slug') );
+                $id = $object->getId();
+                break;
+            case 'themes':
+                $type = 'theme';
+                $items = $this->themes;
+                $object = $items->findBySlug( $request->get('slug') );
+                $id = $object->getId();
+                break;
+        }
+        
+        return $this->loader->render('preview', [
             'type' => $type,
             'id' => $id,
             'object' => $object,

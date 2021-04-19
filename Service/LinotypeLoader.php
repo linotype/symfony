@@ -34,6 +34,9 @@ class LinotypeLoader
                 case 'index':
                     $template = $this->index;
                     break;
+                case 'preview':
+                    $template = '@Linotype/preview.twig';
+                    break; 
                 case 'viewer':
                     $template = '@Linotype/viewer.twig';
                     break;    

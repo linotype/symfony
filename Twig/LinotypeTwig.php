@@ -178,7 +178,6 @@ class LinotypeTwig extends AbstractExtension
     public function renderBlockContext(BlockEntity $block, $context_overwrite = [], $block_key = '')
     {
         $context = [];
-        $customCss = [];
 
         $context['block'] = [];
         
@@ -192,7 +191,7 @@ class LinotypeTwig extends AbstractExtension
         $context['block']['id'] = $block->getCssId();
 
         //add class
-        $context['block']['class'] = $block->getCssClass();
+        $context['block']['class'] = 'block--' . $block->getCssClass();
 
         //add default values to block context
         $context['block']['path'] = $block->getInfo()->getPath();
@@ -286,18 +285,6 @@ class LinotypeTwig extends AbstractExtension
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     /* ADMIN */
 
 
@@ -306,7 +293,7 @@ class LinotypeTwig extends AbstractExtension
         switch ($type) {
 
             case 'block':
-                return $this->renderAdminBlock( $this->blocks->findById($id), $context, $field_key );
+                return $this->renderBlockAdmin( $this->blocks->findById($id), $context, $field_key );
                 break;
     
             default:
@@ -315,33 +302,16 @@ class LinotypeTwig extends AbstractExtension
         }
     }
 
-    public function renderAdminBlock($block, $context_overwrite = [], $field_key = null)
+    public function renderBlockAdmin( BlockEntity $block, $context_overwrite = [], $field_key = null)
     {
         $render = '';
         $context = $this->renderBlockContext($block, $context_overwrite);
         
-        if (isset($block['context'])) {
-            foreach ($block['context'] as $context_key => $context) {
-                if ( isset( $context['field_id'] ) ) {
-
-                    $value = isset( $context_overwrite[$context_key]['value'] ) ? $context_overwrite[$context_key]['value'] : '';
-                    if ( is_array( $value ) ) $value = json_encode( $value );
-
-                    $render .= $this->renderField( $this->fields->findById( $context['field_id'] ), [
-                        'title' => $context['title'],
-                        'info' => "",
-                        'id' => 'field-' . $field_key . '-' . $context_key,
-                        'key' => $context_key,
-                        'uid' => 'field-' . $field_key . '-' . $context_key,
-                        'form' => [
-                            'name' => 'field-' . $field_key . '-' . $context_key,
-                            'value' => $value,
-                        ]
-                    ] );
-                }
-                // $render .= json_encode( $context_key );
-            }
+        foreach( $block->getContext()->getAll() as $context ) {
+            $field = $this->fields->findById( $context->getField() );
+            $render .= $this->renderField( $field, [] );
         }
+
         return $render;
     }
 
@@ -350,12 +320,14 @@ class LinotypeTwig extends AbstractExtension
     public function renderFieldContext(FieldEntity $field, $context_overwrite = [], $field_key = '')
     {
         $context = [];
-        $customCss = [];
 
         $context['field'] = [];
         
-        //define key
+        //define value
         $context['field']['value'] = $field->getValue();
+
+        //define default
+        $context['field']['default'] = $field->getDefault();
 
         //define key
         $context['field']['key'] = $field->getKey();
@@ -367,7 +339,7 @@ class LinotypeTwig extends AbstractExtension
         $context['field']['id'] = $field->getCssId();
 
         //add class
-        $context['field']['class'] = $field->getCssClass();
+        $context['field']['class'] = 'field--' .$field->getCssClass();
 
         //add default values to field context
         $context['field']['path'] = $field->getInfo()->getPath();
@@ -382,30 +354,14 @@ class LinotypeTwig extends AbstractExtension
         //define require context require
         $context['require'] = $field->getRequire();
 
-        //set context
+        //add context value to twig variables
         foreach ( $field->getOption() as $context_key => $context_value ) {
-
-            //add context value to twig variables
             $context[$context_key] = $context_value;
-
-            //use overwrite context exist
-            // if ( isset( $context_overwrite[$context_key] ) && $context_overwrite[$context_key] ) {
-            //     $context[$context_key] = $context_overwrite[$context_key];
-            // }
-
         }
 
-        // $this->currentJs = $block->getCustomJs() ? array_merge( $this->currentJs, $block->getCustomJs() ) : $this->currentJs;
-        // $this->currentCss = $block->getCustomCss() ? array_merge( $this->currentCss, $block->getCustomCss() ) : $this->currentCss;
-
-        // //set childrends
-        // $children = '';
-        // if ( $block->getChildren() ) {
-        //     foreach( $block->getChildren() as $child_key => $child ) {
-        //         $children .= $this->renderBlock($child);
-        //     }
-        // }
-        // $context['children'] = $children;
+        //options variable to scripts and styles
+        $this->currentJs = $field->getCustomJs() ? array_merge( $this->currentJs, $field->getCustomJs() ) : $this->currentJs;
+        $this->currentCss = $field->getCustomCss() ? array_merge( $this->currentCss, $field->getCustomCss() ) : $this->currentCss;
 
         //proccess default variable from context values if require
         foreach ($context as $context_key => $context_value) {
