@@ -1,21 +1,46 @@
 {% extends "@Linotype/admin.twig" %}
 
-{% block content %}
+{% block wrapper_start %}
+    <form action="{{form_action}}" enctype="multipart/form-data" method="POST" class="h-100">
+{% endblock %}
 
-    <form action="{{form_action}}" enctype="multipart/form-data" method="POST">
+    {% block header %}
+        <h1 class="text-dark m-0">Edit {{title}} Page</h1>
+    {% endblock %}
 
-        <h1 class="text-dark">Edit {{title}} Page</h1> 
-        
-        {{ linotype_admin( 'template', template_id ) }}
+    {% block content %}
+        {{ linotype_admin( 'template', template_id ) }}    
+    {% endblock %}
 
-        <input class="btn btn-primary" type="submit" value="Save">
+    {% block footer %}
+        <input class="btn btn-primary float-right" type="submit" value="Save">
+        <input class="btn btn-link float-right" type="submit" value="Reset">
+    {% endblock %}
 
-    </form> 
+{% block wrapper_end %}
+    </form>
+{% endblock %}
 
+{% block viewer %}
+    <div class="viewer">
+        <div class="viewer-content">
+            <div class="viewer-content-top-left"></div>
+            <div class="viewer-content-top-right"></div>
+            <div class="viewer-content-bottom-left"></div>
+            <div class="viewer-content-bottom-right"></div>
+            <iframe 
+                class="viewer-content-iframe"
+                title="Inline Frame Example"
+                width="100%"
+                height="100%"
+                scrolling="yes"
+                src="{{template_path}}">
+            </iframe>
+        </div>
+    </div>
 {% endblock %}
 
 {% block notif %}
-
     {% if success == 'true' %}
         <div class="toast toast-success">
             <button class="btn btn-clear float-right"></button>
@@ -27,28 +52,4 @@
             Error
         </div>
     {% endif %}
-
-{% endblock %}
-
-{% block viewer %}
-
-<div class="viewer">
-    <div class="viewer-content">
-        <div class="viewer-content-top-left"></div>
-        <div class="viewer-content-top-right"></div>
-        <div class="viewer-content-bottom-left"></div>
-        <div class="viewer-content-bottom-right"></div>
-        <iframe 
-            class="viewer-content-iframe"
-            title="Inline Frame Example"
-            width="100%"
-            height="100%"
-            scrolling="yes"
-            src="{{template_path}}">
-        </iframe>
-    </div>
-</div>
-
-
-
 {% endblock %}

@@ -13,21 +13,32 @@
             <i class="icon icon-menu"></i>
         </a>
         <div id="toolbar" class="toolbar off-canvas-sidebar minimize">
-            {% include '@Linotype/Parts/toolbar.twig' with map %}
+            {% include '@Linotype/Parts/toolbar.twig' with { map: map, current: current } %}
         </div>
         <a class="off-canvas-overlay" href="#close"></a>
         <div class="off-canvas-content">
             <div class="columns col-gapless h-100">
                 <div class="column col-auto h-100 oy">
-                    <div class="page">
-                        <div class="notif">
-                            {% block notif %}{% endblock %}
+                    {% block wrapper_start %}{% endblock %}
+                    <div class="panel h-100">
+                        <div class="panel-header">
+                            <div class="notif">
+                                {% block notif %}{% endblock %}
+                            </div>
+                            {% include '@Linotype/Parts/breadcrumb.twig' with breadcrumb %}
+                            {% block header %}{% endblock %}
                         </div>
-                        {% include '@Linotype/Parts/breadcrumb.twig' with breadcrumb %}
-                        {% block header %}{% endblock %}
-                        {% block content %}{% endblock %}
-                        {% block footer %}{% endblock %}
+                        <div class="panel-nav">
+                           {% block nav %}{% endblock %}
+                        </div>
+                        <div class="panel-body">
+                            {% block content %}{% endblock %}
+                        </div>
+                        <div class="panel-footer">
+                            {% block footer %}{% endblock %}
+                        </div>
                     </div>
+                    {% block wrapper_end %}{% endblock %}
                 </div>
                 <div class="column h-100">
                     <div class="viewer h-100">
@@ -37,7 +48,6 @@
             </div>
         </div>
     </div>
-    
     {{ linotype_script() }}
     {{ linotype_style() }}
 </body>

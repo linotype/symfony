@@ -375,16 +375,17 @@ class LinotypeTwig extends AbstractExtension
 
         //render template object
         if ( $templateRender = $this->current->render($template) ) {
-            
+            dump( $templateRender );
             //loop blocks from template render
             foreach ( $templateRender as $block) {
 
                 //render block
                 $block_render = $this->renderBlockAdmin($block);
                 if ( $block_render ) {
-                    $render .= '<div class="mb-2rem">';
-                        $render .= '<h4 class="text-primary">Block ' . $block->getName() . '</h4>';
-                        $render .= '<div class="ml-1">';
+                    $render .= '<div class="panel-block">';
+                        if ( $block->getTitle() ) $render .= '<h4 class="text-primary mb-0 mt-2">' . $block->getTitle() . '</h4>';
+                        if ( $block->getHelp() ) $render .= '<p class="text-secondary mb-1">' . $block->getHelp() . '</p>';
+                        $render .= '<div class="">';
                             $render .= $block_render;
                         $render .= '</div>';
                     $render .= '</div>';

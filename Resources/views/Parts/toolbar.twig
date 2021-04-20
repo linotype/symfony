@@ -20,7 +20,7 @@
     <div class="panel-body">
         <ul class="menu menu-nav">
             {% for id, item in map %}
-            <li class="menu-item tooltip tooltip-right" data-tooltip="{{ item.name }}">
+            <li class="menu-item tooltip tooltip-right{{ current == id ? ' text-primary' }}" data-tooltip="{{ item.name }}">
                 <a href="/admin/{{id}}/edit">
                     {% if item.icon %}<div class="custom-icon">{% include item.icon %}</div>{% endif %} <span class="menu-item-title">{{ item.name }}</span>
                 </a>
@@ -29,13 +29,13 @@
         </ul>
     </div>
     <div class="panel-footer">
-        <ul class="menu menu-nav">
-            <li class="menu-item tooltip tooltip-right" data-tooltip="Options">
+        <ul class="menu menu-nav mb-2">
+            <li class="menu-item tooltip tooltip-right{{ current == 'options' ? ' text-primary' }}" data-tooltip="Options">
                 <a href="/options">
                     <div class="custom-icon">{% include '@Linotype/Icons/settings.svg' %}</div> <span class="menu-item-title">Options</span>
                 </a>
             </li>
-            <li class="menu-item tooltip tooltip-right" data-tooltip="System">
+            <li class="menu-item tooltip tooltip-right{{ current == 'linotype' ? ' text-primary' }}" data-tooltip="System">
                 <a href="/linotype">
                     <div class="custom-icon">{% include '@Linotype/Icons/layers.svg' %}</div> <span class="menu-item-title">System</span>
                 </a>
@@ -45,10 +45,11 @@
                     <div class="custom-icon">{% include '@Linotype/Icons/book-open.svg' %}</div> <span class="menu-item-title">Docs</span>
                 </a>
             </li>
-            <li class="menu-item tooltip tooltip-right" data-tooltip="Account">
-                <figure class="avatar avatar-sm" data-initial="Y" style="background-color: #5755d9;">
-                </figure>
-                <span class="menu-item-title">Yannick</span>
+        </ul>
+        <ul class="menu menu-nav">
+            <li class="menu-item tooltip tooltip-right pl-1" data-tooltip="Account">
+                <figure class="avatar" data-initial="Y" style="background-color: #5755d9;"></figure>
+                <span class="menu-item-title ml-2">Yannick</span>
             </li>
         </ul>
     </div>

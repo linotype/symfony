@@ -61,7 +61,8 @@ class LinotypeAdminController extends AbstractController
 
         return $this->loader->render('admin', [
             'breadcrumb' => $breadcrumb,
-            'map' => $this->map
+            'map' => $this->map,
+            'current' => 'dashboard',
         ]);
     }
 
@@ -131,6 +132,7 @@ class LinotypeAdminController extends AbstractController
         return $this->loader->render('admin_edit', [
             'breadcrumb' => $breadcrumb,
             'map' => $this->map,
+            'current' => $request->get('map_id'),
             'title' => $template->getname(),
             'form_action' => '/admin/' . $request->get('map_id') . '/edit',
             'form_data' => [

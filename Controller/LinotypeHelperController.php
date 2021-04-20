@@ -121,6 +121,7 @@ class LinotypeHelperController extends AbstractController
         return $this->loader->render('helper', [
             'breadcrumb' => $breadcrumb,
             'map' => $this->map,
+            'current' => 'linotype',
             'block' => $block,
             'field' => $field,
             'helper' => $helper,
@@ -184,6 +185,7 @@ class LinotypeHelperController extends AbstractController
         return $this->loader->render('helper_list', [
             'breadcrumb' => $breadcrumb,
             'map' => $this->map,
+            'current' => 'linotype',
         ]);
     }
 
@@ -272,6 +274,7 @@ class LinotypeHelperController extends AbstractController
         return $this->loader->render('helper_view', [
             'breadcrumb' => $breadcrumb,
             'map' => $this->map,
+            'current' => 'linotype',
             'type' => $type,
             'id' => $object->getSlug(),
             'name' => $object->getName(),

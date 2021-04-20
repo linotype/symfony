@@ -49,15 +49,23 @@ class LinotypeMeta
         return $this;
     }
 
-    public function getContextValue(): ?string
+    public function getContextValue()
     {
-        return $this->context_value;
+        if ( $this->is_json( $this->context_value ) ) {
+            $context_value = json_decode( $this->context_value );
+        } else {
+            $context_value = $this->context_value;
+        }
+        return $context_value;
     }
 
-    public function setContextValue(string $context_value): self
-    {
-        $this->context_value = $context_value;
-
+    public function setContextValue($context_value): self
+    {   
+        if ( is_array( $context_value ) ) {
+            $this->context_value = json_encode( $context_value );
+        } else {
+            $this->context_value = $context_value;
+        }
         return $this;
     }
 
@@ -72,4 +80,10 @@ class LinotypeMeta
 
         return $this;
     }
+
+    private function is_json($string) {
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
+    }
+    
 }
