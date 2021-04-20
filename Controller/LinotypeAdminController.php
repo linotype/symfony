@@ -72,46 +72,11 @@ class LinotypeAdminController extends AbstractController
     public function adminEdit( Request $request, EntityManagerInterface $em, LinotypeTemplateRepository $templateRepo, LinotypeMetaRepository $metaRepo ): Response
     {
      
-        $map_id = $this->map[ $request->get('map_id') ]['template'];
-        $template = $this->templates->findById( $map_id );
+        $template_id = $this->map[ $request->get('map_id') ]['template'];
+        $template_path = $this->map[ $request->get('map_id') ]['path'];
+        $template = $this->templates->findById( $template_id );
         $template->setKey($request->get('map_id'));
         $blocks = $this->current->render( $template );
-
-        $data = [];
-        $fields = [];
-        foreach( $blocks as $block ) {
-
-            foreach( $block->getContext()->getAll() as $context ) {
-                if ( $context->getPersist() == 'meta' ) {
-                    
-                    $field = $context->getFieldEntity();
-
-                    $fields[ $field->getKey() ] = $field;
-                        
-                    $data[ $field->getKey() ] = $request->get( $field->getKey() );
-
-                }
-            }
-
-            if ( $block->getChildren() ) {
-                foreach( $block->getChildren() as $child_key => $child ) {
-
-                    foreach( $child->getContext()->getAll() as $context ) {
-                        if ( $context->getPersist() == 'meta' ) {
-                            
-                            $field = $context->getFieldEntity();
-        
-                            $fields[ $field->getKey() ] = $field;
-                                
-                            $data[ $field->getKey() ] = $request->get( $field->getKey() );
-        
-                        }
-                    }
-
-                }
-            }
-
-        }
 
         if ( $request->getMethod() == 'POST' ) {
 
@@ -129,7 +94,7 @@ class LinotypeAdminController extends AbstractController
                 $templateEntity = $templateEntityExist;
             }
             
-            foreach( $data as $context_key => $context_value ) {
+            foreach( $request->request->all() as $context_key => $context_value ) {
                 
                 //check if template ref exist
                 $metaEntityExist = $metaRepo->findOneBy([ 'context_key' => $context_key, 'template_id' => $templateEntity->getId() ]);
@@ -171,7 +136,8 @@ class LinotypeAdminController extends AbstractController
             'form_data' => [
                 'field_custom_name' => $request->get('field_custom_name'),
             ],
-            'fields' => $fields,
+            'template_id' => $template_id,
+            'template_path' => $template_path,
             'success' => $request->get('success')
         ]);
 

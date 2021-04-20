@@ -20,6 +20,9 @@
             <div class="columns col-gapless h-100">
                 <div class="column col-auto h-100 oy">
                     <div class="page">
+                        <div class="notif">
+                            {% block notif %}{% endblock %}
+                        </div>
                         {% include '@Linotype/Parts/breadcrumb.twig' with breadcrumb %}
                         {% block header %}{% endblock %}
                         {% block content %}{% endblock %}
@@ -34,6 +37,7 @@
             </div>
         </div>
     </div>
+    
     {{ linotype_script() }}
     {{ linotype_style() }}
 </body>

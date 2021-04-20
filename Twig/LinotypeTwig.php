@@ -243,80 +243,6 @@ class LinotypeTwig extends AbstractExtension
         return $context;
     }
 
-    public function getHelper( $id, $context = [] )
-    {
-        $target = explode('.', $id );
-        $helper_id = isset($target[0]) ? $target[0] : false;
-        $function = isset($target[1]) ? $target[1] : 'get';
-        if ( isset( $this->config->getHelpers()->gethelper($helper_id)->getmethode()[$function]['controller'] ) ) {
-            $controller = explode('::', $this->config->getHelpers()->gethelper($helper_id)->getmethode()[$function]['controller'] );
-            $class = isset($controller[0]) ? $controller[0] : false;
-            $function = isset($controller[1]) ? $controller[1] : 'get';
-            if ( $class ) {
-                return $this->container->get( $class )->$function( $context );   
-            }
-        }
-    }
-
-    public function linotype_style()
-    {
-        if ( $this->currentCss ) {
-            $css = '';
-            foreach( $this->currentCss as $cssId => $cssVar ) {
-                $css .=  $cssId . ' {' . PHP_EOL;
-                foreach( $cssVar as $cssVarKey => $cssVarVal ) {
-                    $css .=  '  ' . $cssVarKey . ': ' . $cssVarVal . ';' . PHP_EOL;
-                }
-                $css .=  '}' . PHP_EOL;
-            };
-            return '<style id="linotype-variable-css">' . PHP_EOL . '' . $css . '</style>';
-        } else {
-            return '';
-        }
-    }
-
-    public function linotype_script()
-    {
-        if ( $this->currentJs ) {
-            return '<script id="linotype-variable-js" type="text/javascript">' . PHP_EOL . 'var linotype = ' . json_encode( $this->currentJs, JSON_PRETTY_PRINT ) . ';' . PHP_EOL . '</script>';
-        } else {
-            return '';
-        }
-    }
-
-
-    /* ADMIN */
-
-
-    public function linotype_admin(string $type, string $id = '', array $context = [], $field_key = null )
-    {
-        switch ($type) {
-
-            case 'block':
-                return $this->renderBlockAdmin( $this->blocks->findById($id), $context, $field_key );
-                break;
-    
-            default:
-                return '[error]';
-                break;
-        }
-    }
-
-    public function renderBlockAdmin( BlockEntity $block, $context_overwrite = [], $field_key = null)
-    {
-        $render = '';
-        $context = $this->renderBlockContext($block, $context_overwrite);
-        
-        foreach( $block->getContext()->getAll() as $context ) {
-            $field = $this->fields->findById( $context->getField() );
-            $render .= $this->renderField( $field, [] );
-        }
-
-        return $render;
-    }
-
-    
-
     public function renderFieldContext(FieldEntity $field, $context_overwrite = [], $field_key = '')
     {
         $context = [];
@@ -383,5 +309,117 @@ class LinotypeTwig extends AbstractExtension
 
         return $context;
     }
+
+    public function getHelper( $id, $context = [] )
+    {
+        $target = explode('.', $id );
+        $helper_id = isset($target[0]) ? $target[0] : false;
+        $function = isset($target[1]) ? $target[1] : 'get';
+        if ( isset( $this->config->getHelpers()->gethelper($helper_id)->getmethode()[$function]['controller'] ) ) {
+            $controller = explode('::', $this->config->getHelpers()->gethelper($helper_id)->getmethode()[$function]['controller'] );
+            $class = isset($controller[0]) ? $controller[0] : false;
+            $function = isset($controller[1]) ? $controller[1] : 'get';
+            if ( $class ) {
+                return $this->container->get( $class )->$function( $context );   
+            }
+        }
+    }
+
+    public function linotype_style()
+    {
+        if ( $this->currentCss ) {
+            $css = '';
+            foreach( $this->currentCss as $cssId => $cssVar ) {
+                $css .=  $cssId . ' {' . PHP_EOL;
+                foreach( $cssVar as $cssVarKey => $cssVarVal ) {
+                    $css .=  '  ' . $cssVarKey . ': ' . $cssVarVal . ';' . PHP_EOL;
+                }
+                $css .=  '}' . PHP_EOL;
+            };
+            return '<style id="linotype-variable-css">' . PHP_EOL . '' . $css . '</style>';
+        } else {
+            return '';
+        }
+    }
+
+    public function linotype_script()
+    {
+        if ( $this->currentJs ) {
+            return '<script id="linotype-variable-js" type="text/javascript">' . PHP_EOL . 'var linotype = ' . json_encode( $this->currentJs, JSON_PRETTY_PRINT ) . ';' . PHP_EOL . '</script>';
+        } else {
+            return '';
+        }
+    }
+
+    public function linotype_admin(string $type, string $id = '', array $context = [], $field_key = null )
+    {
+        switch ($type) {
+
+            case 'template':
+                return $this->renderTemplateAdmin( $this->templates->findById($id), $context, $field_key );
+                break;
+
+            case 'block':
+                return $this->renderBlockAdmin( $this->blocks->findById($id), $context, $field_key );
+                break;
+
+            default:
+                return '[error]';
+                break;
+        }
+    }
+
+    public function renderTemplateAdmin( TemplateEntity $template )
+    {
+        $render = '';
+
+        //render template object
+        if ( $templateRender = $this->current->render($template) ) {
+            
+            //loop blocks from template render
+            foreach ( $templateRender as $block) {
+
+                //render block
+                $block_render = $this->renderBlockAdmin($block);
+                if ( $block_render ) {
+                    $render .= '<div class="mb-2rem">';
+                        $render .= '<h4 class="text-primary">Block ' . $block->getName() . '</h4>';
+                        $render .= '<div class="ml-1">';
+                            $render .= $block_render;
+                        $render .= '</div>';
+                    $render .= '</div>';
+                }
+
+            }
+        }
+        return $render;
+    }
+
+    public function renderBlockAdmin( BlockEntity $block, $context_overwrite = [], $field_key = null)
+    {
+        $render = '';
+        $context = $this->renderBlockContext($block, $context_overwrite);
+        
+        foreach( $block->getContext()->getAll() as $context ) {
+            if ( $context->getPersist() == 'meta' ) {
+                $field = $context->getFieldEntity();
+                $render .= $this->renderField( $field, [] );
+            }
+        }
+
+        $children = '';
+        if ( $block->getChildren() ) {
+            foreach( $block->getChildren() as $child_key => $child ) {
+                $children .= $this->renderBlockAdmin($child);
+            }
+        }
+        $render .= $children;
+
+        return $render;
+    }
+
+    
+
+    
 
 }

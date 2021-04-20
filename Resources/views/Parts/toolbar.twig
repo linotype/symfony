@@ -1,3 +1,4 @@
+<input id="toolbar-switch" type="checkbox"/>
 <div class="panel h-100">
     <div class="panel-head">
         <a class="logo d-block" href="/admin">
@@ -52,3 +53,8 @@
         </ul>
     </div>
 </div>
+<script for="window" event="onload">
+var toolbarSwitch = document.getElementById('toolbar-switch');
+toolbarSwitch.addEventListener('change', (event) => { localStorage.setItem( "linotype_toolbar_open", event.currentTarget.checked ? 'true' : 'false' ); })
+toolbarSwitch.checked = ( localStorage.getItem('linotype_toolbar_open') === 'true' );
+</script>
