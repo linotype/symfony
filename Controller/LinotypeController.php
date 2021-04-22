@@ -3,6 +3,7 @@
 namespace Linotype\Bundle\LinotypeBundle\Controller;
 
 use Linotype\Bundle\LinotypeBundle\Core\Linotype;
+use Linotype\Bundle\LinotypeBundle\Repository\LinotypeTemplateRepository;
 use Linotype\Bundle\LinotypeBundle\Service\LinotypeLoader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,22 +22,25 @@ class LinotypeController extends AbstractController
      * Linotype index
      * Auto generated routes from linotype theme.yml
      */
-    public function index( Request $request ): Response
+    public function index( Request $request, LinotypeTemplateRepository $templateRepo ): Response
     {
         
         $this->linotype->setContext([
             'route' => $request->attributes->get('_route'),
-            'href' => $request->getSchemeAndHttpHost() . $request->getRequestUri(),
-            'location' => $request->getRequestUri(),
-            'scheme' => $request->getScheme(),
-            'host' => $request->getHost(),
-            'port' => $request->getPort(),
-            'base' => $request->getBaseUrl(),
-            'pathname' => $request->getPathInfo(),
-            'params' => $request->getQueryString(),
         ]);
 
-        return $this->loader->render('index');
+        $map_id = $request->get('map_id');
+
+        $id = (int) $request->get('id');
+
+        if ( $id ) {
+            $templateEntityExist = $templateRepo->findOneBy(['id' => $id]);
+        } else {
+            $templateEntityExist = $templateRepo->findOneBy(['template_key' => $request->attributes->get('_route')]);
+        }
+
+        return $this->loader->render('index', [
+        ]);
     }
 
 }

@@ -52,7 +52,7 @@ class LinotypeMeta
     public function getContextValue()
     {
         if ( $this->is_json( $this->context_value ) ) {
-            $context_value = json_decode( $this->context_value );
+            $context_value = json_decode( $this->context_value, true );
         } else {
             $context_value = $this->context_value;
         }

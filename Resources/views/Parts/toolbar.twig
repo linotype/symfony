@@ -21,7 +21,7 @@
         <ul class="menu menu-nav">
             {% for id, item in map %}
             <li class="menu-item tooltip tooltip-right{{ current == id ? ' text-primary' }}" data-tooltip="{{ item.name }}">
-                <a href="/admin/{{id}}/edit">
+                <a href="{{ item.type == 'page' ? '/admin/content/' ~ id ~ '/edit' : '/admin/content/' ~ id ~ '/list' }}">
                     {% if item.icon %}<div class="custom-icon">{% include item.icon %}</div>{% endif %} <span class="menu-item-title">{{ item.name }}</span>
                 </a>
             </li>
@@ -31,12 +31,12 @@
     <div class="panel-footer">
         <ul class="menu menu-nav mb-2">
             <li class="menu-item tooltip tooltip-right{{ current == 'options' ? ' text-primary' }}" data-tooltip="Options">
-                <a href="/options">
+                <a href="/admin/options">
                     <div class="custom-icon">{% include '@Linotype/Icons/settings.svg' %}</div> <span class="menu-item-title">Options</span>
                 </a>
             </li>
             <li class="menu-item tooltip tooltip-right{{ current == 'linotype' ? ' text-primary' }}" data-tooltip="System">
-                <a href="/linotype">
+                <a href="/admin/system">
                     <div class="custom-icon">{% include '@Linotype/Icons/layers.svg' %}</div> <span class="menu-item-title">System</span>
                 </a>
             </li>

@@ -8,7 +8,7 @@
         
         <!-- Service: Core -->
         <service id="linotype.core" class="Linotype\Core\LinotypeCore" public="true">
-            <argument type="service" id="linotype.repo.meta"/>
+            <!-- <argument type="service" id="linotype.repo.meta"/> -->
         </service>
         <service alias="linotype.core" id="Linotype\Core\LinotypeCore" public="false"/>
 
@@ -57,9 +57,10 @@
         <!-- Service: Twig -->
         <service id="linotype.twig" class="Linotype\Bundle\LinotypeBundle\Twig\LinotypeTwig" public="true">
             <argument type="service" id="service_container"/>
+            <argument type="service" id="request_stack"/>
             <argument type="service" id="twig"/>
             <argument type="service" id="linotype"/>
-            <argument type="service" id="linotype.repo.meta"/>
+            <argument type="service" id="linotype.repo.template"/>
             <tag name="twig.extension" />
         </service>
         <service alias="linotype.twig" id="Linotype\Bundle\LinotypeBundle\Twig\LinotypeTwig" public="false"/>
@@ -74,6 +75,7 @@
             <tag name="controller.service_arguments"/>
             <argument type="service" id="linotype"/>
             <argument type="service" id="linotype.loader"/>
+            <argument type="service" id="linotype.repo.template"/>
         </service>
         <service alias="linotype.controller" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeController" public="true"/>
 
@@ -89,8 +91,8 @@
         </service>
         <service alias="linotype.controller.admin" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeAdminController" public="true"/>
 
-        <!-- Controller: helper -->
-        <service id="linotype.controller.helper" class="Linotype\Bundle\LinotypeBundle\Controller\LinotypeHelperController" public="true">
+        <!-- Controller: system -->
+        <service id="linotype.controller.system" class="Linotype\Bundle\LinotypeBundle\Controller\LinotypeSystemController" public="true">
             <call method="setContainer">
                 <argument type="service" id="Psr\Container\ContainerInterface"/>
             </call>
@@ -100,7 +102,20 @@
             <argument type="service" id="linotype.loader"/>
             <argument type="service" id="profiler"/>
         </service>
-        <service alias="linotype.controller.helper" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeHelperController" public="true"/>
+        <service alias="linotype.controller.system" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeSystemController" public="true"/>
+
+        <!-- Controller: option -->
+        <service id="linotype.controller.option" class="Linotype\Bundle\LinotypeBundle\Controller\LinotypeOptionController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+            <argument type="service" id="linotype"/>
+            <argument type="service" id="linotype.loader"/>
+            <argument type="service" id="profiler"/>
+        </service>
+        <service alias="linotype.controller.option" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeOptionController" public="true"/>
 
         <!-- Routing -->
         <service id="Linotype\Bundle\LinotypeBundle\Routing\ExtraLoader" public="true">

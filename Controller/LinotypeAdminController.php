@@ -39,7 +39,7 @@ class LinotypeAdminController extends AbstractController
 
     /**
      * Linotype admin
-     * @Route("/admin", name="admin")
+     * @Route("/admin", name="linotype_admin")
      */
     public function admin( Request $request ): Response
     {
@@ -68,33 +68,35 @@ class LinotypeAdminController extends AbstractController
 
     /**
      * Linotype admin
-     * @Route("/admin/{map_id}/edit", name="admin_edit")
+     * @Route("/admin/content/{map_id}/edit", name="linotype_admin_edit")
      */
     public function adminEdit( Request $request, EntityManagerInterface $em, LinotypeTemplateRepository $templateRepo, LinotypeMetaRepository $metaRepo ): Response
     {
      
-        $template_id = $this->map[ $request->get('map_id') ]['template'];
-        $template_path = $this->map[ $request->get('map_id') ]['path'];
+        $map_id = $request->get('map_id');
+
+        $template_id = $this->map[ $map_id ]['template'];
+        $template_path = $this->map[ $map_id ]['path'];
         $template = $this->templates->findById( $template_id );
-        $template->setKey($request->get('map_id'));
+        $template->setKey($map_id);
         $blocks = $this->current->render( $template );
+
+        //check if template ref exist
+        $templateEntityExist = $templateRepo->findOneBy(['template_key' => $map_id ]);
+        
+        //create template database if not exist
+        if( $templateEntityExist == null ) {
+            $templateEntity = new LinotypeTemplate();
+            $templateEntity->setTemplateKey($map_id);
+            $templateEntity->setTemplateType( 'single' );
+            $em->persist($templateEntity);
+            $em->flush();
+        } else {
+            $templateEntity = $templateEntityExist;
+        }
 
         if ( $request->getMethod() == 'POST' ) {
 
-            //check if template ref exist
-            $templateEntityExist = $templateRepo->findOneBy(['template_key' => $request->get('map_id') ]);
-            
-            //create template database if not exist
-            if( $templateEntityExist == null ) {
-                $templateEntity = new LinotypeTemplate();
-                $templateEntity->setTemplateKey($request->get('map_id'));
-                $templateEntity->setTemplateType( 'single' );
-                $em->persist($templateEntity);
-                $em->flush();
-            } else {
-                $templateEntity = $templateEntityExist;
-            }
-            
             foreach( $request->request->all() as $context_key => $context_value ) {
                 
                 //check if template ref exist
@@ -118,8 +120,8 @@ class LinotypeAdminController extends AbstractController
 
             $em->flush();
 
-            return $this->redirectToRoute('admin_edit', [ 
-                'map_id' => $request->get('map_id'), 
+            return $this->redirectToRoute('linotype_admin_edit', [ 
+                'map_id' => $map_id, 
                 'success' => 'true'
             ]);
             
@@ -131,15 +133,13 @@ class LinotypeAdminController extends AbstractController
 
         return $this->loader->render('admin_edit', [
             'breadcrumb' => $breadcrumb,
-            'map' => $this->map,
-            'current' => $request->get('map_id'),
-            'title' => $template->getname(),
-            'form_action' => '/admin/' . $request->get('map_id') . '/edit',
-            'form_data' => [
-                'field_custom_name' => $request->get('field_custom_name'),
-            ],
             'template_id' => $template_id,
             'template_path' => $template_path,
+            'current' => $map_id,
+            'map' => $this->map,
+            'title' => $template->getname(),
+            'form_action' => '/admin/content/' . $map_id . '/edit',
+            
             'success' => $request->get('success')
         ]);
 
@@ -147,7 +147,87 @@ class LinotypeAdminController extends AbstractController
 
     /**
      * Linotype admin
-     * @Route("/admin/{map_id}/new", name="admin_new")
+     * @Route("/admin/content/{map_id}/edit/{id}", name="linotype_admin_edit_id")
+     */
+    public function adminEditId( Request $request, EntityManagerInterface $em, LinotypeTemplateRepository $templateRepo, LinotypeMetaRepository $metaRepo ): Response
+    {
+     
+        $map_id = $request->get('map_id');
+        $database_id = $request->get('id');
+        
+        $template_id = $this->map[ $map_id ]['template'];
+        $template_path = str_replace('{id}', $database_id, $this->map[ $map_id ]['path'] );
+        $template = $this->templates->findById( $template_id );
+        $template->setKey($map_id);
+        $blocks = $this->current->render( $template );
+
+        //check if template ref exist
+        $templateEntityExist = $templateRepo->findOneBy(['id' => $database_id ]);
+            
+        //create template database if not exist
+        if( $templateEntityExist == null ) {
+            $templateEntity = new LinotypeTemplate();
+            $templateEntity->setTemplateKey($map_id);
+            $templateEntity->setTemplateType( 'post' );
+            $em->persist($templateEntity);
+            $em->flush();
+        } else {
+            $templateEntity = $templateEntityExist;
+        }
+
+        if ( $request->getMethod() == 'POST' ) {
+
+            foreach( $request->request->all() as $context_key => $context_value ) {
+                
+                //check if template ref exist
+                $metaEntityExist = $metaRepo->findOneBy([ 'context_key' => $context_key, 'template_id' => $templateEntity->getId() ]);
+
+                //create meta if not exist
+                if ( $metaEntityExist == null ) {
+                    $metaEntity = new LinotypeMeta();
+                } else {
+                    $metaEntity = $metaEntityExist;
+                }
+                
+                if ( ! $context_value ) $context_value = '';
+
+                $metaEntity->setContextKey($context_key);
+                $metaEntity->setContextValue($context_value);
+                $metaEntity->setTemplateId( $templateEntity->getId() );
+                $em->persist($metaEntity);
+            
+            }
+
+            $em->flush();
+
+            return $this->redirectToRoute('linotype_admin_edit_id', [ 
+                'map_id' => $map_id, 
+                'id' => $templateEntity->getId(),
+                'success' => 'true'
+            ]);
+            
+        }
+
+        $breadcrumb = [];
+        $breadcrumb[] = ['title' => 'linotype.dev', 'link' => '/'];
+        $breadcrumb[] = ['title' => $template->getname(), 'link' => '/admin/content/' . $template->getSlug() . '/list' ];
+        $breadcrumb[] = ['title' => 'ID: ' . $templateEntity->getId(), 'link' => ''];
+
+        return $this->loader->render('admin_edit', [
+            'breadcrumb' => $breadcrumb,
+            'template_id' => $template_id,
+            'template_path' => $template_path,
+            'current' => $map_id,
+            'map' => $this->map,
+            'title' => $template->getname(),
+            'success' => $request->get('success')
+        ]);
+
+    }
+
+    /**
+     * Linotype admin
+     * @Route("/admin/content/{map_id}/new", name="linotype_admin_new")
      */
     public function adminNew( Request $request ): Response
     {
@@ -164,6 +244,52 @@ class LinotypeAdminController extends AbstractController
         ]);
 
         return $this->loader->render('admin_new');
+    }
+
+    /**
+     * Linotype admin
+     * @Route("/admin/content/{map_id}/list", name="linotype_admin_list")
+     */
+    public function adminList( Request $request, EntityManagerInterface $em, LinotypeTemplateRepository $templateRepo, LinotypeMetaRepository $metaRepo ): Response
+    {
+        $map_id = $request->get('map_id');
+
+        $templates = $templateRepo->findBy(['template_key' => $map_id ]);
+
+        $items = [];
+        if ( $templates ){
+            foreach( $templates as $template ) {
+                $items[ $template->getId() ] = [
+                    'title' => 'Title ' . $template->getId(),
+                    'info' => 'Info ' . $template->getId(),
+                    'desc' => 'Description ' . $template->getId(),
+                    'link' => [
+                        'edit' => '/admin/content/' . $map_id . '/edit/' . $template->getId(),
+                        'view' => '/admin/content/' . $map_id . '/view/' . $template->getId(),
+                        'delete' => '/admin/content/' . $map_id . '/delete/' . $template->getId(),
+                    ]
+                ];
+            }
+        }
+        
+        $template_id = $this->map[ $request->get('map_id') ]['template'];
+        $template_path = $this->map[ $request->get('map_id') ]['path'];
+        $template = $this->templates->findById( $template_id );
+        $template->setKey($request->get('map_id'));
+
+        $breadcrumb = [];
+        $breadcrumb[] = ['title' => 'linotype.dev', 'link' => '/'];
+        $breadcrumb[] = ['title' => $template->getname(), 'link' => ''];
+
+        return $this->loader->render('admin_list',[
+            'breadcrumb' => $breadcrumb,
+            'template_id' => $template_id,
+            'template_path' => $template_path,
+            'current' => $request->get('map_id'),
+            'map' => $this->map,
+            'title' => $template->getname(),
+            'items' => $items
+        ]);
     }
     
 }

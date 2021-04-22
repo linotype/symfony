@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Routing\Annotation\Route;
 
-class LinotypeHelperController extends AbstractController
+class LinotypeSystemController extends AbstractController
 {   
     
     function __construct( Linotype $linotype, LinotypeLoader $loader, Profiler $profiler )
@@ -31,10 +31,10 @@ class LinotypeHelperController extends AbstractController
     }
 
     /**
-     * Linotype helper
-     * @Route("/linotype", name="helper")
+     * Linotype system
+     * @Route("/admin/system", name="linotype_system")
      */
-    public function helper( Request $request ): Response
+    public function system( Request $request ): Response
     {
         $this->linotype->setContext([
             'route' => $request->attributes->get('_route'),
@@ -48,77 +48,77 @@ class LinotypeHelperController extends AbstractController
             'params' => $request->getQueryString(),
         ]);
         
-        $block = [ 'link' => '/linotype/blocks', 'items' => [] ];
+        $block = [ 'link' => '/admin/system/blocks', 'items' => [] ];
         foreach( $this->blocks->getAll() as $item ) {
             $block['items'][] = [
                 'name' => $item->getName(),
                 'desc' => $item->getDesc(),
                 'version' => $item->getVersion(),
                 'author' => $item->getAuthor(),
-                'link' => '/linotype/blocks/' . $item->getSlug(),
+                'link' => '/admin/system/blocks/' . $item->getSlug(),
             ];
         }
 
-        $field = [ 'link' => '/linotype/fields', 'items' => [] ];
+        $field = [ 'link' => '/admin/system/fields', 'items' => [] ];
         foreach( $this->fields->getAll() as $item ) {
             $field['items'][] = [
                 'name' => $item->getName(),
                 'desc' => $item->getDesc(),
                 'version' => $item->getVersion(),
                 'author' => $item->getAuthor(),
-                'link' => '/linotype/fields/' . $item->getSlug(),
+                'link' => '/admin/system/fields/' . $item->getSlug(),
             ];
         }
 
-        $helper = [ 'link' => '/linotype/helpers', 'items' => [] ];
+        $helper = [ 'link' => '/admin/system/helpers', 'items' => [] ];
         foreach( $this->helpers->getAll() as $item ) {
             $helper['items'][] = [
                 'name' => $item->getName(),
                 'desc' => $item->getDesc(),
                 'version' => $item->getVersion(),
                 'author' => $item->getAuthor(),
-                'link' => '/linotype/helpers/' . $item->getSlug(),
+                'link' => '/admin/system/helpers/' . $item->getSlug(),
             ];
         }
 
-        $module = [ 'link' => '/linotype/modules', 'items' => [] ];
+        $module = [ 'link' => '/admin/system/modules', 'items' => [] ];
         foreach( $this->modules->getAll() as $item ) {
             $module['items'][] = [
                 'name' => $item->getName(),
                 'desc' => $item->getDesc(),
                 'version' => $item->getVersion(),
                 'author' => $item->getAuthor(),
-                'link' => '/linotype/modules/' . $item->getSlug(),
+                'link' => '/admin/system/modules/' . $item->getSlug(),
             ];
         }
 
-        $template = [ 'link' => '/linotype/templates', 'items' => [] ];
+        $template = [ 'link' => '/admin/system/templates', 'items' => [] ];
         foreach( $this->templates->getAll() as $item ) {
             $template['items'][] = [
                 'name' => $item->getName(),
                 'desc' => $item->getDesc(),
                 'version' => $item->getVersion(),
                 'author' => $item->getAuthor(),
-                'link' => '/linotype/templates/' . $item->getSlug(),
+                'link' => '/admin/system/templates/' . $item->getSlug(),
             ];
         }
 
-        $theme = [ 'link' => '/linotype/themes', 'items' => [] ];
+        $theme = [ 'link' => '/admin/system/themes', 'items' => [] ];
         foreach( $this->themes->getAll() as $item ) {
             $theme['items'][] = [
                 'name' => $item->getName(),
                 'desc' => $item->getDesc(),
                 'version' => $item->getVersion(),
                 'author' => $item->getAuthor(),
-                'link' => '/linotype/themes/' . $item->getSlug(),
+                'link' => '/admin/system/themes/' . $item->getSlug(),
             ];
         }
         
         $breadcrumb = [];
         $breadcrumb[] = ['title' => 'linotype.dev', 'link' => '/'];
-        $breadcrumb[] = ['title' => 'linotype', 'link' => ''];
+        $breadcrumb[] = ['title' => 'System', 'link' => ''];
 
-        return $this->loader->render('helper', [
+        return $this->loader->render('system', [
             'breadcrumb' => $breadcrumb,
             'map' => $this->map,
             'current' => 'linotype',
@@ -132,8 +132,8 @@ class LinotypeHelperController extends AbstractController
     }
 
     /**
-     * Linotype helper
-     * @Route("/linotype/{type}", name="helper_list")
+     * Linotype system
+     * @Route("/admin/system/{type}", name="linotype_system_list")
      */
     public function list( Request $request ): Response
     {
@@ -179,10 +179,10 @@ class LinotypeHelperController extends AbstractController
 
         $breadcrumb = [];
         $breadcrumb[] = ['title' => 'linotype.dev', 'link' => '/'];
-        $breadcrumb[] = ['title' => 'linotype', 'link' => '/linotype'];
+        $breadcrumb[] = ['title' => 'System', 'link' => '/admin/system'];
         $breadcrumb[] = ['title' => $title, 'link' => ''];
 
-        return $this->loader->render('helper_list', [
+        return $this->loader->render('system_list', [
             'breadcrumb' => $breadcrumb,
             'map' => $this->map,
             'current' => 'linotype',
@@ -190,8 +190,8 @@ class LinotypeHelperController extends AbstractController
     }
 
     /**
-     * Linotype helper
-     * @Route("/linotype/{type}/{slug}", name="helper_view")
+     * Linotype system
+     * @Route("/admin/system/{type}/{slug}", name="linotype_system_view")
      */
     public function view( Request $request ): Response
     {
@@ -218,7 +218,7 @@ class LinotypeHelperController extends AbstractController
             case 'blocks':
                 $type = $request->get('type');
                 $title = 'Blocks';
-                $link = '/linotype/blocks';
+                $link = '/admin/system/blocks';
                 $items = $this->blocks;
                 $object = $items->findBySlug( $request->get('slug') );
                 $object_title = $object->getName();
@@ -226,7 +226,7 @@ class LinotypeHelperController extends AbstractController
             case 'fields':
                 $type = $request->get('type');
                 $title = 'Fields';
-                $link = '/linotype/fields';
+                $link = '/admin/system/fields';
                 $items = $this->fields;
                 $object = $items->findBySlug( $request->get('slug') );
                 $object_title = $object->getName();
@@ -234,7 +234,7 @@ class LinotypeHelperController extends AbstractController
             case 'helpers':
                 $type = $request->get('type');
                 $title = 'Helpers';
-                $link = '/linotype/helpers';
+                $link = '/admin/system/helpers';
                 $items = $this->helpers;
                 $object = $items->findBySlug( $request->get('slug') );
                 $object_title = $object->getName();
@@ -242,7 +242,7 @@ class LinotypeHelperController extends AbstractController
             case 'modules':
                 $type = $request->get('type');
                 $title = 'Modules';
-                $link = '/linotype/modules';
+                $link = '/admin/system/modules';
                 $items = $this->modules;
                 $object = $items->findBySlug( $request->get('slug') );
                 $object_title = $object->getName();
@@ -250,7 +250,7 @@ class LinotypeHelperController extends AbstractController
             case 'templates':
                 $type = $request->get('type');
                 $title = 'Templates';
-                $link = '/linotype/templates';
+                $link = '/admin/system/templates';
                 $items = $this->templates;
                 $object = $items->findBySlug( $request->get('slug') );
                 $object_title = $object->getName();
@@ -258,7 +258,7 @@ class LinotypeHelperController extends AbstractController
             case 'themes':
                 $type = $request->get('type');
                 $title = 'Themes';
-                $link = '/linotype/themes';
+                $link = '/admin/system/themes';
                 $items = $this->themes;
                 $object = $items->findBySlug( $request->get('slug') );
                 $object_title = $object->getName();
@@ -267,11 +267,11 @@ class LinotypeHelperController extends AbstractController
 
         $breadcrumb = [];
         $breadcrumb[] = ['title' => 'linotype.dev', 'link' => '/'];
-        $breadcrumb[] = ['title' => 'linotype', 'link' => '/linotype'];
+        $breadcrumb[] = ['title' => 'System', 'link' => '/admin/system'];
         $breadcrumb[] = ['title' => $title, 'link' => $link];
         $breadcrumb[] = ['title' => $object_title, 'link' => ''];
 
-        return $this->loader->render('helper_view', [
+        return $this->loader->render('system_view', [
             'breadcrumb' => $breadcrumb,
             'map' => $this->map,
             'current' => 'linotype',
@@ -284,8 +284,8 @@ class LinotypeHelperController extends AbstractController
 
 
     /**
-     * Linotype helper
-     * @Route("/linotype/{type}/{slug}/viewer", name="helper_viewer")
+     * Linotype system
+     * @Route("/admin/system/{type}/{slug}/viewer", name="linotype_system_viewer")
      */
     public function viewer( Request $request ): Response
     {
@@ -338,8 +338,8 @@ class LinotypeHelperController extends AbstractController
     }
 
     /**
-     * Linotype helper
-     * @Route("/linotype/{type}/{slug}/preview", name="helper_preview")
+     * Linotype system
+     * @Route("/admin/system/{type}/{slug}/preview", name="linotype_system_preview")
      */
     public function preview( Request $request ): Response
     {

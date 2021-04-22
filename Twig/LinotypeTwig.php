@@ -7,11 +7,13 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use Twig\Environment;
 use Linotype\Bundle\LinotypeBundle\Core\Linotype;
+use Linotype\Bundle\LinotypeBundle\Repository\LinotypeTemplateRepository;
 use Linotype\Core\Entity\BlockEntity;
 use Linotype\Core\Entity\FieldEntity;
 use Linotype\Core\Entity\ModuleEntity;
 use Linotype\Core\Entity\TemplateEntity;
 use Linotype\Core\Entity\ThemeEntity;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class LinotypeTwig extends AbstractExtension
 {
@@ -21,8 +23,18 @@ class LinotypeTwig extends AbstractExtension
 
     public $currentCss = [];
 
-    public function __construct( ContainerInterface $container, Environment $twig, Linotype $linotype )
+    public function __construct( ContainerInterface $container, RequestStack $request, Environment $twig, Linotype $linotype, LinotypeTemplateRepository $templateRepo )
     {
+        
+        //get current database id
+        $this->database_id = $request->getCurrentRequest()->get('id');
+        if ( $this->database_id == null ) {
+            $template_key = $request->getCurrentRequest()->get('map_id');
+            if ( $template_key == null ) $template_key = $request->getCurrentRequest()->get('_route');
+            $template = $templateRepo->findOneBy(['template_key' => $template_key ]);
+            if ( $template ) $this->database_id = $template->getId();
+        }
+
         $this->linotype = $linotype;
         $this->config = $linotype->getConfig();
         $this->current = $this->config->getCurrent();
@@ -131,12 +143,12 @@ class LinotypeTwig extends AbstractExtension
         return $render;
     }
 
-    public function renderTemplate(TemplateEntity $template)
+    public function renderTemplate(TemplateEntity $template, $context = [] )
     {
         $render = '';
 
         //render template object
-        if ( $templateRender = $this->current->render($template) ) {
+        if ( $templateRender = $this->current->render($template, $this->database_id) ) {
             
             //loop blocks from template render
             foreach ( $templateRender as $block) {
@@ -351,16 +363,16 @@ class LinotypeTwig extends AbstractExtension
         }
     }
 
-    public function linotype_admin(string $type, string $id = '', array $context = [], $field_key = null )
+    public function linotype_admin(string $type, string $id = '', array $context = [] )
     {
         switch ($type) {
 
             case 'template':
-                return $this->renderTemplateAdmin( $this->templates->findById($id), $context, $field_key );
+                return $this->renderTemplateAdmin( $this->templates->findById($id), $context );
                 break;
 
             case 'block':
-                return $this->renderBlockAdmin( $this->blocks->findById($id), $context, $field_key );
+                return $this->renderBlockAdmin( $this->blocks->findById($id), $context );
                 break;
 
             default:
@@ -369,13 +381,13 @@ class LinotypeTwig extends AbstractExtension
         }
     }
 
-    public function renderTemplateAdmin( TemplateEntity $template )
+    public function renderTemplateAdmin( TemplateEntity $template, $context = [] )
     {
         $render = '';
 
         //render template object
-        if ( $templateRender = $this->current->render($template) ) {
-            dump( $templateRender );
+        if ( $templateRender = $this->current->render($template, $this->database_id) ) {
+            
             //loop blocks from template render
             foreach ( $templateRender as $block) {
 
