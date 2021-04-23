@@ -27,12 +27,15 @@ class LinotypeTwig extends AbstractExtension
     {
         
         //get current database id
-        $this->database_id = $request->getCurrentRequest()->get('id');
-        if ( $this->database_id == null ) {
-            $template_key = $request->getCurrentRequest()->get('map_id');
-            if ( $template_key == null ) $template_key = $request->getCurrentRequest()->get('_route');
-            $template = $templateRepo->findOneBy(['template_key' => $template_key ]);
-            if ( $template ) $this->database_id = $template->getId();
+        $this->database_id = null;
+        if ( $request->getCurrentRequest() && $request->getCurrentRequest()->get('_route') !== 'linotype_admin_new' ) {
+            $this->database_id = $request->getCurrentRequest()->get('id');
+            if ( $this->database_id == null ) {
+                $template_key = $request->getCurrentRequest()->get('map_id');
+                if ( $template_key == null ) $template_key = $request->getCurrentRequest()->get('_route');
+                $template = $templateRepo->findOneBy(['template_key' => $template_key ]);
+                if ( $template ) $this->database_id = $template->getId();
+            }
         }
 
         $this->linotype = $linotype;

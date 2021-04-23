@@ -1,7 +1,10 @@
 {% extends "@Linotype/admin.twig" %}
 
 {% block header %}
-    <h1 class="mb-0 mt-2">{{title}} list</h1>
+    <div class="panel-header-title">
+        <h1 class="mb-0 mt-2">{{title}} list</h1>
+        <a href="{{link_new}}" class="btn btn-primary panel-header-title-right">Add new</a>
+    </div>
 {% endblock %}
 
 {% block content %}
@@ -11,8 +14,8 @@
         {% for item in items %}
         
             <div class="panel-block">
-                <div class="dropdown float-right">
-                    <div class="btn-group"><a href="{{item.link.edit}}" class="btn btn-primary">Edit</a><a class="btn btn-primary dropdown-toggle" tabindex="0"><i class="icon icon-caret"></i></a>
+                <div class="dropdown float-right mt-1">
+                    <div class="btn-group"><a href="{{item.link.edit}}" class="btn">Edit</a><a class="btn dropdown-toggle" tabindex="0"><i class="icon icon-caret"></i></a>
                         <ul class="menu">
                             <li class="menu-item"><a href="{{item.link.view}}">View</a></li>
                             
@@ -20,10 +23,11 @@
                         </ul>
                     </div>
                 </div>
-                <h4 class="text-primary mb-0 mt-2">{{item.title}}</h4>
-                <p class="text-secondary mb-1">{{item.info}}</p>
+                <h4 class="text-primary mb-0 mt-2">{{item.title|raw}}</h4>
+                <p class="text-secondary mb-1">{{item.info|raw}}</p>
                 <div class="desc">
-                {{item.desc}}
+                {{item.desc|raw}}
+                {# {{linotype_render('block', item.block, )}} #}
                 </div>
             </div>
             
