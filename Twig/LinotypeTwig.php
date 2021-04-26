@@ -43,6 +43,7 @@ class LinotypeTwig extends AbstractExtension
         $this->current = $this->config->getCurrent();
         $this->theme = $this->current->getTheme();
         $this->map = $this->theme ? $this->theme->getMap() : [];
+        $this->themes = $this->config->getThemes();
         $this->templates = $this->config->getTemplates();
         $this->modules = $this->config->getModules();
         $this->blocks = $this->config->getBlocks();
@@ -151,7 +152,7 @@ class LinotypeTwig extends AbstractExtension
         $render = '';
 
         //render template object
-        if ( $templateRender = $this->current->render($template, $this->database_id) ) {
+        if ( $templateRender = $this->current->renderTemplate($template, $this->database_id) ) {
             
             //loop blocks from template render
             foreach ( $templateRender as $block) {
@@ -370,6 +371,10 @@ class LinotypeTwig extends AbstractExtension
     {
         switch ($type) {
 
+            case 'theme':
+                return $this->renderThemeAdmin();
+                break;
+
             case 'template':
                 return $this->renderTemplateAdmin( $this->templates->findById($id), $context );
                 break;
@@ -383,13 +388,69 @@ class LinotypeTwig extends AbstractExtension
                 break;
         }
     }
+    public function renderThemeAdmin()
+    {
+        $render = '';
+
+        $this->optionKeys = [];
+
+        foreach( $this->current->getTheme()->getMap() as $map_key => $map ) {
+
+            $template = $this->templates->findById($map['template']);
+
+            $template_render = $this->current->renderTemplate( $template );
+
+            foreach( $template_render as $block_key => $block ) {
+                
+                $block_render = $this->renderThemeAdminOption($block);
+                if ( $block_render ) {
+                    $render .= '<div class="panel-block">';
+                        if ( $block->getTitle() ) $render .= '<h4 class="text-primary mb-0 mt-2">' . $block->getTitle() . '</h4>';
+                        if ( $block->getHelp() ) $render .= '<p class="text-secondary mb-1">' . $block->getHelp() . '</p>';
+                        $render .= '<div class="">';
+                            $render .= $block_render;
+                        $render .= '</div>';
+                    $render .= '</div>';
+                }
+                
+            }
+        }
+
+        return $render;
+
+    }
+
+    public function renderThemeAdminOption(BlockEntity $block)
+    {
+        $render = '';
+        foreach( $block->getContext()->getAll() as $context ) {
+            if ( $context->getPersist() == 'option' || $context->getPersist() == 'both' ) {
+                $option_key = $block->getkey() . '__' . $context->getId();
+                if ( ! in_array( $option_key, $this->optionKeys ) ) {
+                    array_push( $this->optionKeys, $option_key );
+                    $field = $context->getFieldEntity();
+                    if ( $field ) $render .= $this->renderField( $field, [] );
+                }
+            }
+        }
+
+        $children = '';
+        if ( $block->getChildren() ) {
+            foreach( $block->getChildren() as $child_key => $child ) {
+                $children .= $this->renderThemeAdminOption($child);
+            }
+        }
+        $render .= $children;
+
+        return $render;
+    }
 
     public function renderTemplateAdmin( TemplateEntity $template, $context = [] )
     {
         $render = '';
 
         //render template object
-        if ( $templateRender = $this->current->render($template, $this->database_id) ) {
+        if ( $templateRender = $this->current->renderTemplate($template, $this->database_id) ) {
             
             //loop blocks from template render
             foreach ( $templateRender as $block) {
@@ -411,15 +472,14 @@ class LinotypeTwig extends AbstractExtension
         return $render;
     }
 
-    public function renderBlockAdmin( BlockEntity $block, $context_overwrite = [], $field_key = null)
+    public function renderBlockAdmin( BlockEntity $block)
     {
         $render = '';
-        $context = $this->renderBlockContext($block, $context_overwrite);
         
         foreach( $block->getContext()->getAll() as $context ) {
-            if ( $context->getPersist() == 'meta' ) {
+            if ( $context->getPersist() == 'meta' || $context->getPersist() == 'both' ) {
                 $field = $context->getFieldEntity();
-                $render .= $this->renderField( $field, [] );
+                if ( $field ) $render .= $this->renderField( $field, [] );
             }
         }
 
@@ -433,9 +493,5 @@ class LinotypeTwig extends AbstractExtension
 
         return $render;
     }
-
-    
-
-    
 
 }

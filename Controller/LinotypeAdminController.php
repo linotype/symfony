@@ -79,7 +79,7 @@ class LinotypeAdminController extends AbstractController
         $template_path = $this->map[ $map_id ]['path'];
         $template = $this->templates->findById( $template_id );
         $template->setKey($map_id);
-        $blocks = $this->current->render( $template );
+        $blocks = $this->current->renderTemplate( $template );
 
         //check if template ref exist
         $templateEntityExist = $templateRepo->findOneBy(['template_key' => $map_id ]);
@@ -159,7 +159,7 @@ class LinotypeAdminController extends AbstractController
         $template_path = str_replace('{id}', $database_id, $this->map[ $map_id ]['path'] );
         $template = $this->templates->findById( $template_id );
         $template->setKey($map_id);
-        $blocks = $this->current->render( $template );
+        $blocks = $this->current->renderTemplate( $template );
 
         //check if template ref exist
         $templateEntityExist = $templateRepo->findOneBy(['id' => $database_id ]);
@@ -341,7 +341,7 @@ class LinotypeAdminController extends AbstractController
 
                 $templateObject = $this->templates->findById( $this->map[ $template->getTemplateKey() ]['template'] );
 
-                $blocks = $this->current->render( $templateObject, $template->getId() );
+                $blocks = $this->current->renderTemplate( $templateObject, $template->getId() );
 
                 $preview_data = ['title'=>'No title','info'=>'','desc'=>''];
                 if (isset( $this->map[ $template->getTemplateKey() ]['preview'] ) ) {

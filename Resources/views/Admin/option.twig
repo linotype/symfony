@@ -1,13 +1,55 @@
 {% extends "@Linotype/admin.twig" %}
 
-{% block header %}
-    <h1 class="mb-0 mt-2">Global Options</h1>
+{% block wrapper_start %}
+    <form  enctype="multipart/form-data" method="POST" class="h-100">
 {% endblock %}
 
-{% block content %}
-    {# {{ linotype_admin( 'template', template_id ) }}     #}
+    {% block header %}
+        <h1 class="mb-0 mt-2">Global Options</h1>
+    {% endblock %}
+
+    {% block content %}
+        {{ linotype_admin( 'theme' ) }}     
+    {% endblock %}
+
+    {% block footer %}
+        <input class="btn btn-primary float-right" type="submit" value="Save">
+        <input class="btn btn-link float-right" type="submit" value="Reset">
+    {% endblock %}
+
+{% block wrapper_end %}
+    </form>
 {% endblock %}
 
-{% block footer %}
-    
+{% block viewer %}
+    <div class="viewer">
+        <div class="viewer-content">
+            <div class="viewer-content-top-left"></div>
+            <div class="viewer-content-top-right"></div>
+            <div class="viewer-content-bottom-left"></div>
+            <div class="viewer-content-bottom-right"></div>
+            <iframe 
+                class="viewer-content-iframe"
+                title="Inline Frame Example"
+                width="100%"
+                height="100%"
+                scrolling="yes"
+                src="/">
+            </iframe>
+        </div>
+    </div>
+{% endblock %}
+
+{% block notif %}
+    {% if success == 'true' %}
+        <div class="toast toast-success">
+            <button class="btn btn-clear float-right"></button>
+            Success
+        </div>
+    {% elseif success == 'false' %}
+        <div class="toast toast-error">
+            <button class="btn btn-clear float-right"></button>
+            Error
+        </div>
+    {% endif %}
 {% endblock %}

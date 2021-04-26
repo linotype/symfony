@@ -59,3 +59,23 @@
     </div>
     
 {% endblock %}
+
+
+{% block viewer %}
+    <div class="viewer">
+        <div class="viewer-content">
+            <div class="viewer-content-top-left"></div>
+            <div class="viewer-content-top-right"></div>
+            <div class="viewer-content-bottom-left"></div>
+            <div class="viewer-content-bottom-right"></div>
+            <iframe 
+                class="viewer-content-iframe"
+                title="Inline Frame Example"
+                width="100%"
+                height="100%"
+                scrolling="yes"
+                src="https://www.taureauaile.fr/conseils-culinaires/">
+            </iframe>
+        </div>
+    </div>
+{% endblock %}

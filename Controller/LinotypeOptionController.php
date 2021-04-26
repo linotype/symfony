@@ -2,8 +2,12 @@
 
 namespace Linotype\Bundle\LinotypeBundle\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Linotype\Bundle\LinotypeBundle\Core\Linotype;
+use Linotype\Bundle\LinotypeBundle\Entity\LinotypeOption;
+use Linotype\Bundle\LinotypeBundle\Repository\LinotypeOptionRepository;
 use Linotype\Bundle\LinotypeBundle\Service\LinotypeLoader;
+use Linotype\Core\Render\ThemeRender;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,9 +38,39 @@ class LinotypeOptionController extends AbstractController
      * Linotype option
      * @Route("/admin/options", name="linotype_option")
      */
-    public function helper( Request $request ): Response
+    public function options( Request $request, EntityManagerInterface $em, LinotypeOptionRepository $optionRepo ): Response
     {
         
+        if ( $request->getMethod() == 'POST' ) {
+
+            foreach( $request->request->all() as $option_key => $option_value ) {
+                
+                //check if template ref exist
+                $optionEntityExist = $optionRepo->findOneBy([ 'option_key' => $option_key ]);
+
+                //create option if not exist
+                if ( $optionEntityExist == null ) {
+                    $optionEntity = new LinotypeOption();
+                } else {
+                    $optionEntity = $optionEntityExist;
+                }
+                
+                if ( ! $option_value ) $option_value = '';
+
+                $optionEntity->setOptionKey($option_key);
+                $optionEntity->setOptionValue($option_value);
+                $em->persist($optionEntity);
+            
+            }
+
+            $em->flush();
+
+            return $this->redirectToRoute('linotype_option', [ 
+                'success' => 'true'
+            ]);
+            
+        }
+
         $breadcrumb = [];
         $breadcrumb[] = ['title' => 'linotype.dev', 'link' => '/'];
         $breadcrumb[] = ['title' => 'Options', 'link' => ''];
@@ -46,6 +80,7 @@ class LinotypeOptionController extends AbstractController
             'map' => $this->map,
             'current' => 'option',
             'title' => 'Options',
+            'success' => ''
         ]);
     }
     
