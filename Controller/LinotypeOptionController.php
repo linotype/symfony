@@ -80,7 +80,7 @@ class LinotypeOptionController extends AbstractController
             'map' => $this->map,
             'current' => 'option',
             'title' => 'Options',
-            'success' => ''
+            'success' => $request->get('success')
         ]);
     }
     
