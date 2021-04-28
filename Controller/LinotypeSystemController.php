@@ -7,13 +7,12 @@ use Linotype\Bundle\LinotypeBundle\Service\LinotypeLoader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Routing\Annotation\Route;
 
 class LinotypeSystemController extends AbstractController
 {   
     
-    function __construct( Linotype $linotype, LinotypeLoader $loader, Profiler $profiler )
+    function __construct( Linotype $linotype, LinotypeLoader $loader )
     {
         $this->linotype = $linotype;
         $this->config = $this->linotype->getConfig();
@@ -27,7 +26,6 @@ class LinotypeSystemController extends AbstractController
         $this->templates = $this->config->getTemplates();
         $this->themes = $this->config->getThemes();
         $this->loader = $loader;
-        $this->profiler = $profiler;
     }
 
     /**
@@ -289,8 +287,6 @@ class LinotypeSystemController extends AbstractController
      */
     public function viewer( Request $request ): Response
     {
-        if ( $request->get('mode') == 'iframe' ) $this->profiler->disable();
-   
         switch( $request->get('type') ) {
             case 'blocks':
                 $type = 'block';
@@ -343,8 +339,6 @@ class LinotypeSystemController extends AbstractController
      */
     public function preview( Request $request ): Response
     {
-        if ( $request->get('mode') == 'iframe' ) $this->profiler->disable();
-   
         switch( $request->get('type') ) {
             case 'blocks':
                 $type = 'block';

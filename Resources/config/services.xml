@@ -61,6 +61,11 @@
         </service>
         <service alias="linotype.repo.template" id="Linotype\Bundle\LinotypeBundle\Repository\LinotypeTemplateRepository" public="false"/>
 
+        <!-- Service: LinotypeUserRepository -->
+        <service id="Linotype\Bundle\LinotypeBundle\Repository\LinotypeUserRepository" autowire="true">
+            <tag name="doctrine.repository_service"/>
+        </service>
+
         <!-- Service: Twig -->
         <service id="linotype.twig" class="Linotype\Bundle\LinotypeBundle\Twig\LinotypeTwig" public="true">
             <argument type="service" id="service_container"/>
@@ -86,6 +91,19 @@
         </service>
         <service alias="linotype.controller" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeController" public="true"/>
 
+        <!-- Controller: linotype security -->
+        <service id="linotype.controller.security" class="Linotype\Bundle\LinotypeBundle\Controller\LinotypeSecurityController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+            <argument type="service" id="linotype"/>
+            <argument type="service" id="linotype.loader"/>
+            <argument type="service" id="linotype.repo.template"/>
+        </service>
+        <service alias="linotype.controller.security" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeSecurityController" public="true"/>
+
         <!-- Controller: admin -->
         <service id="linotype.controller.admin" class="Linotype\Bundle\LinotypeBundle\Controller\LinotypeAdminController" public="true">
             <call method="setContainer">
@@ -108,7 +126,6 @@
             <tag name="controller.service_arguments"/>
             <argument type="service" id="linotype"/>
             <argument type="service" id="linotype.loader"/>
-            <argument type="service" id="profiler"/>
         </service>
         <service alias="linotype.controller.system" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeSystemController" public="true"/>
 
@@ -122,9 +139,17 @@
             <argument type="service" id="linotype"/>
             <argument type="service" id="linotype.loader"/>
             <argument type="service" id="stof_doctrine_extensions.uploadable.manager" />
-            <argument type="service" id="profiler"/>
         </service>
         <service alias="linotype.controller.option" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeOptionController" public="true"/>
+
+        <!-- Security -->
+        <service id="linotype.security" class="Linotype\Bundle\LinotypeBundle\Security\LinotypeAuthenticator" public="true">
+            <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
+            <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
+            <argument type="service" id="Symfony\Component\Security\Csrf\CsrfTokenManagerInterface"/>
+            <argument type="service" id="Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface"/>
+        </service>
+        <service alias="linotype.security" id="Linotype\Bundle\LinotypeBundle\Security\LinotypeAuthenticator" public="false"/>
 
         <!-- Routing -->
         <service id="Linotype\Bundle\LinotypeBundle\Routing\ExtraLoader" public="true">

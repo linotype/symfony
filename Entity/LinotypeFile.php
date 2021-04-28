@@ -2,6 +2,7 @@
 
 namespace Linotype\Bundle\LinotypeBundle\Entity;
 
+use Linotype\Bundle\LinotypeBundle\Repository\LinotypeFileRepository;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 

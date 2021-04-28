@@ -1,0 +1,53 @@
+{% extends "@Linotype/base.twig" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+	<div class="hero hero-center">
+		<div class="hero-body hero-body-large">
+
+			<h1>Log in</h1>
+		
+			<form action="{{ path('linotype_login') }}" method="post">
+
+				{% if error %}
+					<div class="toast toast-error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+				{% endif %}
+
+				{% if app.user %}
+
+					<div class="toast toast-success">You are logged in as {{ app.user.username }}, <a href="{{ path('linotype_logout') }}">Logout</a></div>
+				
+				{% else %}
+				
+					<div class="form-group">
+						<label class="form-label" for="input-example-1">Username</label>
+						<input class="form-input" type="username" id="username" name="username" value="{{ last_username }}" placeholder="">
+					</div>
+
+					<div class="form-group">
+						<label class="form-label" for="input-example-1">Password</label>
+						<input class="form-input" type="password" id="password" name="password" placeholder="">
+					</div>
+
+					<div class="form-group">
+						<label class="form-switch">
+							<input type="checkbox" name="_remember_me">
+							<i class="form-icon"></i> Remember me
+						</label>
+					</div>
+					
+					<button class="btn btn-primary mt-2" type="submit">Login</button>
+					<a class="btn btn-link mt-2" href="/signin">Sign in</a>
+
+					<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
+
+				{% endif %}
+
+			</form>
+
+		</div>
+	</div>
+
+{% endblock %}

@@ -40,16 +40,26 @@
                     <div class="custom-icon">{% include '@Linotype/Icons/layers.svg' %}</div> <span class="menu-item-title">System</span>
                 </a>
             </li>
+            <li class="menu-item tooltip tooltip-right{{ current == 'users' ? ' text-primary' }}" data-tooltip="Users">
+                <a href="/admin/users">
+                    <div class="custom-icon">{% include '@Linotype/Icons/users.svg' %}</div> <span class="menu-item-title">Users</span>
+                </a>
+            </li>
             <li class="menu-item tooltip tooltip-right" data-tooltip="Docs">
                 <a href="https://docs.linotype.dev" target="_blank">
                     <div class="custom-icon">{% include '@Linotype/Icons/book-open.svg' %}</div> <span class="menu-item-title">Docs</span>
+                </a>
+            </li>
+            <li class="menu-item tooltip tooltip-right" data-tooltip="Logout">
+                <a href="/logout">
+                    <div class="custom-icon">{% include '@Linotype/Icons/log-out.svg' %}</div> <span class="menu-item-title">Logout</span>
                 </a>
             </li>
         </ul>
         <ul class="menu menu-nav">
             <li class="menu-item tooltip tooltip-right pl-1" data-tooltip="Account">
                 <figure class="avatar" data-initial="Y" style="background-color: #5755d9;"></figure>
-                <span class="menu-item-title ml-2">Yannick</span>
+                <span class="menu-item-title ml-2">{{app.user.username}}</span>
             </li>
         </ul>
     </div>

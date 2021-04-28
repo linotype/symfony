@@ -14,13 +14,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Routing\Annotation\Route;
 
 class LinotypeOptionController extends AbstractController
 {   
     
-    function __construct( Linotype $linotype, LinotypeLoader $loader, UploadableManager $uploadableManager, Profiler $profiler )
+    function __construct( Linotype $linotype, LinotypeLoader $loader, UploadableManager $uploadableManager )
     {
         $this->linotype = $linotype;
         $this->config = $this->linotype->getConfig();
@@ -35,7 +34,6 @@ class LinotypeOptionController extends AbstractController
         $this->themes = $this->config->getThemes();
         $this->loader = $loader;
         $this->uploadableManager = $uploadableManager;
-        $this->profiler = $profiler;
     }
 
     /**
