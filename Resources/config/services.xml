@@ -36,6 +36,13 @@
         </service>
         <service alias="linotype.loader" id="Linotype\Bundle\LinotypeBundle\Service\LinotypeLoader" public="false"/>
         
+        <!-- Service: LinotypeFileRepository -->
+        <service id="linotype.repo.file" class="Linotype\Bundle\LinotypeBundle\Repository\LinotypeFileRepository" public="true">
+            <argument type="service" id="Doctrine\Common\Persistence\ManagerRegistry"/>
+        </service>
+        <service alias="linotype.repo.file" id="Linotype\Bundle\LinotypeBundle\Repository\LinotypeFileRepository" public="false"/>
+
+
         <!-- Service: LinotypeMetaRepository -->
         <service id="linotype.repo.meta" class="Linotype\Bundle\LinotypeBundle\Repository\LinotypeMetaRepository" public="true">
             <argument type="service" id="Doctrine\Common\Persistence\ManagerRegistry"/>
@@ -88,6 +95,7 @@
             <tag name="controller.service_arguments"/>
             <argument type="service" id="linotype"/>
             <argument type="service" id="linotype.loader"/>
+            <argument type="service" id="stof_doctrine_extensions.uploadable.manager" />
         </service>
         <service alias="linotype.controller.admin" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeAdminController" public="true"/>
 
@@ -113,6 +121,7 @@
             <tag name="controller.service_arguments"/>
             <argument type="service" id="linotype"/>
             <argument type="service" id="linotype.loader"/>
+            <argument type="service" id="stof_doctrine_extensions.uploadable.manager" />
             <argument type="service" id="profiler"/>
         </service>
         <service alias="linotype.controller.option" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeOptionController" public="true"/>

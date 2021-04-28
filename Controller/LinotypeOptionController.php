@@ -4,11 +4,14 @@ namespace Linotype\Bundle\LinotypeBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Linotype\Bundle\LinotypeBundle\Core\Linotype;
+use Linotype\Bundle\LinotypeBundle\Entity\LinotypeFile;
 use Linotype\Bundle\LinotypeBundle\Entity\LinotypeOption;
 use Linotype\Bundle\LinotypeBundle\Repository\LinotypeOptionRepository;
 use Linotype\Bundle\LinotypeBundle\Service\LinotypeLoader;
 use Linotype\Core\Render\ThemeRender;
+use Stof\DoctrineExtensionsBundle\Uploadable\UploadableManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Profiler\Profiler;
@@ -17,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class LinotypeOptionController extends AbstractController
 {   
     
-    function __construct( Linotype $linotype, LinotypeLoader $loader, Profiler $profiler )
+    function __construct( Linotype $linotype, LinotypeLoader $loader, UploadableManager $uploadableManager, Profiler $profiler )
     {
         $this->linotype = $linotype;
         $this->config = $this->linotype->getConfig();
@@ -31,6 +34,7 @@ class LinotypeOptionController extends AbstractController
         $this->templates = $this->config->getTemplates();
         $this->themes = $this->config->getThemes();
         $this->loader = $loader;
+        $this->uploadableManager = $uploadableManager;
         $this->profiler = $profiler;
     }
 
@@ -55,6 +59,26 @@ class LinotypeOptionController extends AbstractController
                     $optionEntity = $optionEntityExist;
                 }
                 
+                if ( $request->files->has( $option_key ) ) {
+                    
+                    $file = $request->files->get( $option_key );
+                    
+                    if ( $file instanceof UploadedFile ) {
+
+                        $fileEntity = new LinotypeFile();
+                        
+                        $em->persist($fileEntity);
+    
+                        $this->uploadableManager->markEntityToUpload($fileEntity, $file);
+
+                        $em->flush();
+                        
+                        $option_value = $fileEntity->getId();
+                    
+                    }
+                    
+                }
+
                 if ( ! $option_value ) $option_value = '';
 
                 $optionEntity->setOptionKey($option_key);

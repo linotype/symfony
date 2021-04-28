@@ -9,11 +9,10 @@ use Linotype\Bundle\LinotypeBundle\Repository\LinotypeTemplateRepository;
 use Linotype\Bundle\LinotypeBundle\Service\LinotypeLoader;
 use Doctrine\ORM\EntityManagerInterface;
 use Linotype\Bundle\LinotypeBundle\Core\Linotype;
+use Linotype\Bundle\LinotypeBundle\Entity\LinotypeFile;
+use Stof\DoctrineExtensionsBundle\Uploadable\UploadableManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class LinotypeAdminController extends AbstractController
 {   
     
-    function __construct( Linotype $linotype, LinotypeLoader $loader )
+    function __construct( Linotype $linotype, LinotypeLoader $loader, UploadableManager $uploadableManager )
     {
         $this->linotype = $linotype;
         $this->config = $this->linotype->getConfig();
@@ -35,6 +34,7 @@ class LinotypeAdminController extends AbstractController
         $this->templates = $this->config->getTemplates();
         $this->themes = $this->config->getThemes();
         $this->loader = $loader;
+        $this->uploadableManager = $uploadableManager;
     }
 
     /**
@@ -70,7 +70,7 @@ class LinotypeAdminController extends AbstractController
      * Linotype admin
      * @Route("/admin/content/{map_id}/edit", name="linotype_admin_edit")
      */
-    public function adminEdit( Request $request, EntityManagerInterface $em, LinotypeTemplateRepository $templateRepo, LinotypeMetaRepository $metaRepo ): Response
+    public function adminEdit( Request $request, EntityManagerInterface $em, LinotypeTemplateRepository $templateRepo, LinotypeMetaRepository $metaRepo  ): Response
     {
      
         $map_id = $request->get('map_id');
@@ -96,7 +96,7 @@ class LinotypeAdminController extends AbstractController
         }
 
         if ( $request->getMethod() == 'POST' ) {
-
+            
             foreach( $request->request->all() as $context_key => $context_value ) {
                 
                 //check if template ref exist
@@ -109,6 +109,26 @@ class LinotypeAdminController extends AbstractController
                     $metaEntity = $metaEntityExist;
                 }
                 
+                if ( $request->files->has( $context_key ) ) {
+                    
+                    $file = $request->files->get( $context_key );
+                    
+                    if ( $file instanceof UploadedFile ) {
+
+                        $fileEntity = new LinotypeFile();
+                    
+                        $em->persist($fileEntity);
+
+                        $this->uploadableManager->markEntityToUpload($fileEntity, $file);
+
+                        $em->flush();
+                    
+                        $context_value = $fileEntity->getId();
+                    
+                    }
+
+                }
+
                 if ( ! $context_value ) $context_value = '';
 
                 $metaEntity->setContextKey($context_key);
@@ -174,9 +194,9 @@ class LinotypeAdminController extends AbstractController
         } else {
             $templateEntity = $templateEntityExist;
         }
-
+        
         if ( $request->getMethod() == 'POST' ) {
-
+            
             foreach( $request->request->all() as $context_key => $context_value ) {
                 
                 //check if template ref exist
@@ -189,6 +209,26 @@ class LinotypeAdminController extends AbstractController
                     $metaEntity = $metaEntityExist;
                 }
                 
+                if ( $request->files->has( $context_key ) ) {
+                    
+                    $file = $request->files->get( $context_key );
+
+                    if ( $file instanceof UploadedFile ) {
+
+                        $fileEntity = new LinotypeFile();
+                        
+                        $em->persist($fileEntity);
+
+                        $this->uploadableManager->markEntityToUpload($fileEntity, $file);
+
+                        $em->flush();
+                        
+                        $context_value = $fileEntity->getId();
+
+                    }
+                    
+                }
+
                 if ( ! $context_value ) $context_value = '';
 
                 $metaEntity->setContextKey($context_key);
