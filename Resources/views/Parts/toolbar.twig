@@ -64,8 +64,3 @@
         </ul>
     </div>
 </div>
-<script for="window" event="onload">
-var toolbarSwitch = document.getElementById('toolbar-switch');
-toolbarSwitch.addEventListener('change', (event) => { localStorage.setItem( "linotype_toolbar_open", event.currentTarget.checked ? 'true' : 'false' ); })
-toolbarSwitch.checked = ( localStorage.getItem('linotype_toolbar_open') === 'true' );
-</script>

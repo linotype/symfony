@@ -18,9 +18,9 @@
         <a class="off-canvas-overlay" href="#close"></a>
         <div class="off-canvas-content">
             <div class="columns col-gapless h-100">
-                <div class="column col-auto h-100 oy">
+                <div id="panel" class="column col-auto h-100 oy">
                     {% block wrapper_start %}{% endblock %}
-                    <div class="panel h-100">
+                    <div  class="panel h-100">
                         <div class="panel-header">
                             <div class="notif">
                                 {% block notif %}{% endblock %}
@@ -58,6 +58,22 @@
             </div>
         </div>
     </div>
+    <script for="window" event="onload">
+    var toolbarSwitch = document.getElementById('toolbar-switch');
+    toolbarSwitch.addEventListener('change', (event) => { localStorage.setItem( "linotype_toolbar_open", event.currentTarget.checked ? 'true' : 'false' ); })
+    toolbarSwitch.checked = ( localStorage.getItem('linotype_toolbar_open') === 'true' );
+    var panel = document.getElementById('panel');
+    panel.className = panel.className + ' resizable';
+    var resizer = document.createElement('div');
+    resizer.className = 'resizer';
+    panel.appendChild(resizer);
+    resizer.addEventListener('mousedown', initDrag, false);
+    var startX, startWidth;
+    function initDrag(e) { e.preventDefault(); startX = e.clientX; startWidth = parseInt( document.defaultView.getComputedStyle(panel).width, 10 ); document.documentElement.addEventListener('mousemove', doDrag, false); document.documentElement.addEventListener('mouseup', stopDrag, false); }
+    function doDrag(e) { document.getElementById("iframe").style.pointerEvents = "none"; e.preventDefault(); panel.style.width = (startWidth + e.clientX - startX) + 'px'; }
+    function stopDrag(e) { document.getElementById("iframe").style.pointerEvents = ""; e.preventDefault(); document.documentElement.removeEventListener('mousemove', doDrag, false); document.documentElement.removeEventListener('mouseup', stopDrag, false); localStorage.setItem( "linotype_panel_width", (startWidth + e.clientX - startX) + 'px' ); }
+    panel.style.width = localStorage.getItem('linotype_panel_width');
+    </script>
     {{ linotype_script() }}
     {{ linotype_style() }}
 </body>

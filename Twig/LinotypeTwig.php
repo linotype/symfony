@@ -360,11 +360,7 @@ class LinotypeTwig extends AbstractExtension
 
     public function linotype_script()
     {
-        if ( $this->currentJs ) {
-            return '<script id="linotype-variable-js" type="text/javascript">' . PHP_EOL . 'var linotype = ' . json_encode( $this->currentJs, JSON_PRETTY_PRINT ) . ';' . PHP_EOL . '</script>';
-        } else {
-            return '';
-        }
+        return '<script id="linotype-variable-js" type="text/javascript">' . PHP_EOL . 'var linotype = ' . json_encode( $this->currentJs, JSON_PRETTY_PRINT ) . ';' . PHP_EOL . '</script>';
     }
 
     public function linotype_admin(string $type, string $id = '', array $context = [] )
@@ -405,9 +401,9 @@ class LinotypeTwig extends AbstractExtension
                 $block_render = $this->renderThemeAdminOption($block);
                 if ( $block_render ) {
                     $render .= '<div class="panel-block">';
-                        if ( $block->getTitle() ) $render .= '<h4 class="text-primary mb-0 mt-2">' . $block->getTitle() . '</h4>';
-                        if ( $block->getHelp() ) $render .= '<p class="text-secondary mb-1">' . $block->getHelp() . '</p>';
-                        $render .= '<div class="">';
+                        if ( $block->getTitle() ) $render .= '<h4 class="text-black m-0 p-0 mb-2">' . $block->getTitle() . '</h4>';
+                        if ( $block->getHelp() ) $render .= '<p class="text-gray mb-1">' . $block->getHelp() . '</p>';
+                        $render .= '<div class="panel-block-content">';
                             $render .= $block_render;
                         $render .= '</div>';
                     $render .= '</div>';
@@ -459,9 +455,9 @@ class LinotypeTwig extends AbstractExtension
                 $block_render = $this->renderBlockAdmin($block);
                 if ( $block_render ) {
                     $render .= '<div class="panel-block">';
-                        if ( $block->getTitle() ) $render .= '<h4 class="text-primary mb-0 mt-2">' . $block->getTitle() . '</h4>';
-                        if ( $block->getHelp() ) $render .= '<p class="text-secondary mb-1">' . $block->getHelp() . '</p>';
-                        $render .= '<div class="">';
+                        if ( $block->getTitle() ) $render .= '<h4 class="text-black m-0 p-0 mb-2">' . $block->getTitle() . '</h4>';
+                        if ( $block->getHelp() ) $render .= '<p class="text-gray mb-1">' . $block->getHelp() . '</p>';
+                        $render .= '<div class="panel-block-content">';
                             $render .= $block_render;
                         $render .= '</div>';
                     $render .= '</div>';
@@ -476,20 +472,24 @@ class LinotypeTwig extends AbstractExtension
     {
         $render = '';
         
-        foreach( $block->getContext()->getAll() as $context ) {
-            if ( $context->getPersist() == 'meta' || $context->getPersist() == 'both' ) {
-                $field = $context->getFieldEntity();
-                if ( $field ) $render .= $this->renderField( $field, [] );
+        if ( $this->container->get('security.authorization_checker')->isGranted('ROLE_EDITOR') ) {
+            
+            foreach( $block->getContext()->getAll() as $context ) {
+                if ( $context->getPersist() == 'meta' || $context->getPersist() == 'both' ) {
+                    $field = $context->getFieldEntity();
+                    if ( $field ) $render .= $this->renderField( $field, [] );
+                }
             }
-        }
 
-        $children = '';
-        if ( $block->getChildren() ) {
-            foreach( $block->getChildren() as $child_key => $child ) {
-                $children .= $this->renderBlockAdmin($child);
+            $children = '';
+            if ( $block->getChildren() ) {
+                foreach( $block->getChildren() as $child_key => $child ) {
+                    $children .= $this->renderBlockAdmin($child);
+                }
             }
+            $render .= $children;
+
         }
-        $render .= $children;
 
         return $render;
     }
