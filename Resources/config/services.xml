@@ -42,6 +42,12 @@
         </service>
         <service alias="linotype.repo.file" id="Linotype\Bundle\LinotypeBundle\Repository\LinotypeFileRepository" public="false"/>
 
+        <!-- Service: LinotypeUserRepository -->
+        <service id="linotype.repo.user" class="Linotype\Bundle\LinotypeBundle\Repository\LinotypeUserRepository" public="true">
+            <argument type="service" id="Doctrine\Common\Persistence\ManagerRegistry"/>
+        </service>
+        <service alias="linotype.repo.user" id="Linotype\Bundle\LinotypeBundle\Repository\LinotypeUserRepository" public="false"/>
+
 
         <!-- Service: LinotypeMetaRepository -->
         <service id="linotype.repo.meta" class="Linotype\Bundle\LinotypeBundle\Repository\LinotypeMetaRepository" public="true">
@@ -116,6 +122,19 @@
             <argument type="service" id="stof_doctrine_extensions.uploadable.manager" />
         </service>
         <service alias="linotype.controller.admin" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeAdminController" public="true"/>
+
+        <!-- Controller: admin -->
+        <service id="linotype.controller.user" class="Linotype\Bundle\LinotypeBundle\Controller\LinotypeUserController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="Psr\Container\ContainerInterface"/>
+            </call>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+            <argument type="service" id="linotype"/>
+            <argument type="service" id="linotype.loader"/>
+            <argument type="service" id="stof_doctrine_extensions.uploadable.manager" />
+        </service>
+        <service alias="linotype.controller.user" id="Linotype\Bundle\LinotypeBundle\Controller\LinotypeUserController" public="true"/>
 
         <!-- Controller: system -->
         <service id="linotype.controller.system" class="Linotype\Bundle\LinotypeBundle\Controller\LinotypeSystemController" public="true">

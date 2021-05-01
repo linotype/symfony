@@ -2,7 +2,9 @@
 
 namespace Linotype\Bundle\LinotypeBundle\Controller;
 
+use Doctrine\DBAL\DBALException;
 use Linotype\Bundle\LinotypeBundle\Entity\LinotypeUser;
+use Linotype\Bundle\LinotypeBundle\Repository\LinotypeUserRepository;
 use Linotype\Bundle\LinotypeBundle\Security\LinotypeAuthenticator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,34 +47,9 @@ class LinotypeSecurityController extends AbstractController
     /**
 	 * @Route("/signin", name="linotype_signin")
 	 */
-	public function signin( Request $request, UserPasswordEncoderInterface $userPasswordEncoder, GuardAuthenticatorHandler $guardAuthenticatorHandler, LinotypeAuthenticator $linotypeAuthenticator )
+	public function signin( Request $request, UserPasswordEncoderInterface $userPasswordEncoder, GuardAuthenticatorHandler $guardAuthenticatorHandler, LinotypeAuthenticator $linotypeAuthenticator, LinotypeUserRepository $linotypeUserRepository )
 	{
 		
-		if ( $request->isMethod('POST') &&
-			 $request->request->get('username') &&
-			 $request->request->get('email') &&
-			 $request->request->get('password') ) {
-
-			$user = new LinotypeUser();
-			$user->setUsername($request->request->get('username'));
-			$user->setEmail($request->request->get('email'));
-			$user->setPassword( $userPasswordEncoder->encodePassword(
-				$user,
-				$request->request->get('password')
-			));
-			$em = $this->getDoctrine()->getManager();
-			$em->persist($user);
-			$em->flush();
-
-			return $guardAuthenticatorHandler->authenticateUserAndHandleSuccess(
-				$user,
-				$request,
-				$linotypeAuthenticator,
-				'main'
-			);
-
-		}
-
 		$error = false;
 		if ( $request->request->has('password') && $request->request->get('password') == "" ) {
 			$error = 'Require password.';
@@ -91,6 +68,49 @@ class LinotypeSecurityController extends AbstractController
 		}
 		if ( $request->request->has('email') && $request->request->get('email') ) {
 			$last_email = $request->request->get('email');
+		}
+
+		if ( $request->isMethod('POST') && $request->request->get('username') && $request->request->get('email') && $request->request->get('password') ) {
+
+			try {
+
+				$user = new LinotypeUser();
+				$user->setUsername($request->request->get('username'));
+				$user->setEmail($request->request->get('email'));
+				$user->setPassword( $userPasswordEncoder->encodePassword(
+					$user,
+					$request->request->get('password')
+				));
+				$em = $this->getDoctrine()->getManager();
+				$em->persist($user);
+				$em->flush();
+
+			} 
+			catch(\Exception $e) 
+			{
+				$error = 'Error, please contact an administrator.';
+
+				$emailExist = $linotypeUserRepository->findOneBy([ 'email' => $last_email ]);
+				if ( $emailExist ) $error = 'Email already exist.';
+
+				$usernameExist = $linotypeUserRepository->findOneBy([ 'username' => $last_username ]);
+				if ( $usernameExist ) $error = 'Username already exist.';
+
+				return $this->render('@Linotype/Security/signin.twig',[
+					'error' => $error,
+					'last_username' => $last_username,
+					'last_email' => $last_email,
+				]);
+			
+			}
+
+			return $guardAuthenticatorHandler->authenticateUserAndHandleSuccess(
+				$user,
+				$request,
+				$linotypeAuthenticator,
+				'main'
+			);
+
 		}
 		
 		return $this->render('@Linotype/Security/signin.twig',[
