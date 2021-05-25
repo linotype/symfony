@@ -1,7 +1,0 @@
-<div data-block-id="{{block.uid}}" id="{{block.id}}" class="{{block.class}}" style="{{ margin ? "margin:#{margin};" : '' }}{{ font_size ? "font-size:#{font_size}" : '' }}">
-  {% if childrens is defined %}
-    {% for children in childrens %}
-      {{ linotype_render( 'block', children ) }}
-    {% endfor %}
-  {% endif %}
-</div>
