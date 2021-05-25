@@ -14,24 +14,36 @@
             <i class="icon icon-menu"></i>
         </a>
         <div id="toolbar" class="toolbar off-canvas-sidebar minimize">
-            {% include '@Linotype/Parts/toolbar.twig' with { map: map, current: current } %}
+            {% include '@Linotype/Parts/toolbar.twig' with { menu: menu } %}
         </div>
         <a class="off-canvas-overlay" href="#close"></a>
         <div class="off-canvas-content">
+            <div class="notif">
+                {% block notif %}{% endblock %}
+            </div>
             <div class="columns col-gapless h-100">
                 <div id="panel" class="column col-auto h-100 oy">
                     {% block wrapper_start %}{% endblock %}
                     <div  class="panel h-100">
                         <div class="panel-header">
-                            <div class="notif">
-                                {% block notif %}{% endblock %}
+                            <div class="language-selector dropdown dropdown-right"><a class="btn btn-primary dropdown-toggle" tabindex="0">{{menu.lang.current}}<i class="icon icon-caret"></i></a>
+                                <ul class="menu text-left">
+                                    {% for id, item in menu.lang.list %}
+                                        <li class="menu-item{{ item.current ? ' text-primary' }}">
+                                            <a href="{{ item.path }}">{{ item.name }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
                             </div>
+                            
                             {% include '@Linotype/Parts/breadcrumb.twig' with breadcrumb %}
-                            {% block header %}{% endblock %}
+                            
                         </div>
+                        {% if block('nav') %}
                         <div class="panel-nav">
                            {% block nav %}{% endblock %}
                         </div>
+                        {% endif %}
                         <div class="panel-body scroll-shadow-overlay">
                             <div class="scroll-shadow-container">
                             <div class="scroll-shadow-shadow scroll-shadow-top-radial"></div>
@@ -40,21 +52,22 @@
                             <div class="scroll-shadow-content">
                                 <div class="scroll-shadow-cover-top"></div>
                                 <div class="panel-body-content">
+                                    {% block header %}{% endblock %}
                                     {% block content %}{% endblock %}
                                 </div>
                                 <div class="scroll-shadow-cover-bottom"></div>
                             </div>
                         </div>
-                        <div class="panel-footer">
-                            {% block footer %}{% endblock %}
-                        </div>
+                        {% if block('footer') %}
+                            <div class="panel-footer">
+                                {% block footer %}{% endblock %}
+                            </div>
+                        {% endif %}
                     </div>
                     {% block wrapper_end %}{% endblock %}
                 </div>
                 <div class="column h-100">
-                    <div class="viewer h-100">
-                        {% block viewer %}{% endblock %}
-                    </div>
+                    {% block viewer %}{% endblock %}
                 </div>
             </div>
         </div>

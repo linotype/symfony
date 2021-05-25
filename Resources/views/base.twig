@@ -10,7 +10,7 @@
 </head>
 <body>
     <div class="off-canvas off-canvas-sidebar-show">
-        <div id="toolbar" class="toolbar">
+        <div id="toolbar">
             <div class="panel h-100">
                 <div class="panel-head">
                     <a class="logo d-block" href="/admin">
@@ -34,13 +34,13 @@
                 </div>
                 <div class="panel-footer">
                     <ul class="menu menu-nav mb-2 d-inline-block">
-                        <li class="menu-item tooltip tooltip-right" data-tooltip="Docs">
+                        <li class="menu-item">
                             <a href="https://linotype.dev" target="_blank">
                                 <div class="custom-icon">{% include '@Linotype/Icons/globe.svg' %}</div> <span class="menu-item-title">Website</span>
                             </a>
                         </li>
                         {% block links %}{% endblock %}
-                        <li class="menu-item tooltip tooltip-right" data-tooltip="Docs">
+                        <li class="menu-item">
                             <a href="https://docs.linotype.dev" target="_blank">
                                 <div class="custom-icon">{% include '@Linotype/Icons/book-open.svg' %}</div> <span class="menu-item-title">Docs</span>
                             </a>
@@ -67,7 +67,7 @@
                                         width="100%"
                                         height="100%"
                                         scrolling="yes"
-                                        src="https://www.taureauaile.fr/conseils-culinaires/">
+                                        src="/">
                                     </iframe>
                                 </div>
                             </div>

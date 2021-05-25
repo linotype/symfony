@@ -6,7 +6,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Linotype\Bundle\LinotypeBundle\Core\Linotype;
 use Linotype\Bundle\LinotypeBundle\Entity\LinotypeFile;
 use Linotype\Bundle\LinotypeBundle\Entity\LinotypeOption;
+use Linotype\Bundle\LinotypeBundle\Entity\LinotypeTranslate;
 use Linotype\Bundle\LinotypeBundle\Repository\LinotypeOptionRepository;
+use Linotype\Bundle\LinotypeBundle\Repository\LinotypeTranslateRepository;
 use Linotype\Bundle\LinotypeBundle\Service\LinotypeLoader;
 use Linotype\Core\Render\ThemeRender;
 use Stof\DoctrineExtensionsBundle\Uploadable\UploadableManager;
@@ -40,25 +42,18 @@ class LinotypeOptionController extends AbstractController
      * Linotype option
      * @Route("/admin/options", name="linotype_option")
      */
-    public function options( Request $request, EntityManagerInterface $em, LinotypeOptionRepository $optionRepo ): Response
+    public function options( Request $request, EntityManagerInterface $em, LinotypeOptionRepository $optionRepo, LinotypeTranslateRepository $translateRepo ): Response
     {
+        $locale = $request->getLocale();
         
         if ( $request->getMethod() == 'POST' ) {
 
             foreach( $request->request->all() as $option_key => $option_value ) {
                 
-                //check if template ref exist
-                $optionEntityExist = $optionRepo->findOneBy([ 'option_key' => $option_key ]);
+                if ( ! $option_value ) $option_value = '';
 
-                //create option if not exist
-                if ( $optionEntityExist == null ) {
-                    $optionEntity = new LinotypeOption();
-                } else {
-                    $optionEntity = $optionEntityExist;
-                }
-                
                 if ( $request->files->has( $option_key ) ) {
-                    
+                        
                     $file = $request->files->get( $option_key );
                     
                     if ( $file instanceof UploadedFile ) {
@@ -77,16 +72,49 @@ class LinotypeOptionController extends AbstractController
                     
                 }
 
-                if ( ! $option_value ) $option_value = '';
+                if ( $locale == 'en' ) {
 
-                $optionEntity->setOptionKey($option_key);
-                $optionEntity->setOptionValue($option_value);
-                $em->persist($optionEntity);
+                    //check if option ref exist
+                    $optionEntityExist = $optionRepo->findOneBy([ 'option_key' => $option_key ]);
+
+                    //create option if not exist
+                    if ( $optionEntityExist == null ) {
+                        $optionEntity = new LinotypeOption();
+                    } else {
+                        $optionEntity = $optionEntityExist;
+                    }
+                    
+                    $optionEntity->setOptionKey($option_key);
+                    $optionEntity->setOptionValue($option_value);
+                    $em->persist($optionEntity); 
+
+                } else {
+
+                    $optionTransEntityExist = $translateRepo->findOneBy([ 
+                        'type' => 'option',
+                        'trans_id' => $option_key,
+                        'lang' => $locale,
+                    ]);
+
+                    //create option if not exist
+                    if ( $optionTransEntityExist == null ) {
+                        $optionTransEntity = new LinotypeTranslate();
+                    } else {
+                        $optionTransEntity = $optionTransEntityExist;
+                    }
+
+                    $optionTransEntity->setType('option');
+                    $optionTransEntity->setLang($locale);
+                    $optionTransEntity->setTransId($option_key);
+                    $optionTransEntity->setTransValue($option_value);
+                    $em->persist($optionTransEntity);
+                    
+                }
             
             }
-
+            
             $em->flush();
-
+            
             return $this->redirectToRoute('linotype_option', [ 
                 'success' => 'true'
             ]);
@@ -99,6 +127,7 @@ class LinotypeOptionController extends AbstractController
 
         return $this->loader->render('admin_option', [
             'breadcrumb' => $breadcrumb,
+            'menu' => $this->linotype->getMenu('option'),
             'map' => $this->map,
             'current' => 'option',
             'title' => 'Options',

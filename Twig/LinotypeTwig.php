@@ -59,6 +59,7 @@ class LinotypeTwig extends AbstractExtension
             new TwigFunction('linotype', [$this, 'linotype'], ['is_safe' => ['html']]),
             new TwigFunction('linotype_admin', [$this, 'linotype_admin'], ['is_safe' => ['html']]),
             new TwigFunction('linotype_render', [$this, 'linotype_render'], ['is_safe' => ['html']]),
+            new TwigFunction('linotype_widget', [$this, 'linotype_widget'], ['is_safe' => ['html']]),
             new TwigFunction('linotype_style', [$this, 'linotype_style'], ['is_safe' => ['html']]),
             new TwigFunction('linotype_script', [$this, 'linotype_script'], ['is_safe' => ['html']]),
         ];
@@ -489,6 +490,19 @@ class LinotypeTwig extends AbstractExtension
             }
             $render .= $children;
 
+        }
+
+        return $render;
+    }
+
+    public function linotype_widget()
+    {
+        $render = '';
+
+        if ( ! isset( $_GET['preview'] ) ){
+            $render = $this->twig->render( '@Linotype/Parts/widget.twig', [
+                'menu' => $this->linotype->getMenu(),
+            ]);
         }
 
         return $render;

@@ -118,6 +118,7 @@ class LinotypeSystemController extends AbstractController
 
         return $this->loader->render('system', [
             'breadcrumb' => $breadcrumb,
+            'menu' => $this->linotype->getMenu('system'),
             'map' => $this->map,
             'current' => 'linotype',
             'block' => $block,
@@ -182,6 +183,7 @@ class LinotypeSystemController extends AbstractController
 
         return $this->loader->render('system_list', [
             'breadcrumb' => $breadcrumb,
+            'menu' => $this->linotype->getMenu('system'),
             'map' => $this->map,
             'current' => 'linotype',
         ]);
@@ -271,6 +273,7 @@ class LinotypeSystemController extends AbstractController
 
         return $this->loader->render('system_view', [
             'breadcrumb' => $breadcrumb,
+            'menu' => $this->linotype->getMenu('system'),
             'map' => $this->map,
             'current' => 'linotype',
             'type' => $type,

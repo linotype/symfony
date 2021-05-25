@@ -19,32 +19,24 @@
     </div>
     <div class="panel-body">
         <ul class="menu menu-nav">
-            {% for id, item in map %}
-            <li class="menu-item tooltip tooltip-right{{ current == id ? ' text-primary' }}" data-tooltip="{{ item.name }}">
-                <a href="{{ item.type == 'page' ? '/admin/content/' ~ id ~ '/edit' : '/admin/content/' ~ id ~ '/list' }}">
+            {% for id, item in menu.top %}
+            <li class="menu-item tooltip tooltip-right{{ item.current ? ' text-primary' }}" data-tooltip="{{ item.name }}">
+                <a href="{{ item.path }}">
                     {% if item.icon %}<div class="custom-icon">{% include item.icon %}</div>{% endif %} <span class="menu-item-title">{{ item.name }}</span>
                 </a>
             </li>
             {% endfor %}
         </ul>
     </div>
-    <div class="panel-footer">
+    <div class="panel-body-end">
         <ul class="menu menu-nav mb-2">
-            <li class="menu-item tooltip tooltip-right{{ current == 'options' ? ' text-primary' }}" data-tooltip="Options">
-                <a href="/admin/options">
-                    <div class="custom-icon">{% include '@Linotype/Icons/settings.svg' %}</div> <span class="menu-item-title">Options</span>
-                </a>
-            </li>
-            <li class="menu-item tooltip tooltip-right{{ current == 'linotype' ? ' text-primary' }}" data-tooltip="System">
-                <a href="/admin/system">
-                    <div class="custom-icon">{% include '@Linotype/Icons/layers.svg' %}</div> <span class="menu-item-title">System</span>
-                </a>
-            </li>
-            <li class="menu-item tooltip tooltip-right{{ current == 'users' ? ' text-primary' }}" data-tooltip="Users">
-                <a href="/admin/user/list">
-                    <div class="custom-icon">{% include '@Linotype/Icons/users.svg' %}</div> <span class="menu-item-title">Users</span>
-                </a>
-            </li>
+            {% for id, item in menu.bottom %}
+                <li class="menu-item tooltip tooltip-right{{ item.current ? ' text-primary' }}" data-tooltip="{{ item.name }}">
+                    <a href="{{ item.path }}">
+                        {% if item.icon %}<div class="custom-icon">{% include item.icon %}</div>{% endif %} <span class="menu-item-title">{{ item.name }}</span>
+                    </a>
+                </li>
+            {% endfor %}
             <li class="menu-item tooltip tooltip-right" data-tooltip="Docs">
                 <a href="https://docs.linotype.dev" target="_blank">
                     <div class="custom-icon">{% include '@Linotype/Icons/book-open.svg' %}</div> <span class="menu-item-title">Docs</span>
@@ -56,6 +48,8 @@
                 </a>
             </li>
         </ul>
+    </div>
+    <div class="panel-footer">
         <ul class="menu menu-nav">
             <li class="menu-item tooltip tooltip-right pl-1" data-tooltip="Account">
                 <figure class="avatar" data-initial="Y" style="background-color: #5755d9;"></figure>

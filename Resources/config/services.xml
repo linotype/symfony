@@ -15,10 +15,12 @@
         <!-- Linotype: Core -->
         <service id="linotype" class="Linotype\Bundle\LinotypeBundle\Core\Linotype" public="true">
             <argument type="service" id="service_container"/>
+            <argument type="service" id="request_stack"/>
             <argument type="service" id="linotype.core"/>
             <argument type="service" id="linotype.repo.meta"/>
             <argument type="service" id="linotype.repo.template"/>
             <argument type="service" id="linotype.repo.option"/>
+            <argument type="service" id="linotype.repo.translate"/>
         </service>
         <service alias="linotype" id="Linotype\Bundle\LinotypeBundle\Core\Linotype" public="true"/>
 
@@ -35,7 +37,7 @@
             <argument type="service" id="linotype"/>
         </service>
         <service alias="linotype.loader" id="Linotype\Bundle\LinotypeBundle\Service\LinotypeLoader" public="false"/>
-        
+
         <!-- Service: LinotypeFileRepository -->
         <service id="linotype.repo.file" class="Linotype\Bundle\LinotypeBundle\Repository\LinotypeFileRepository" public="true">
             <argument type="service" id="Doctrine\Common\Persistence\ManagerRegistry"/>
@@ -48,6 +50,11 @@
         </service>
         <service alias="linotype.repo.user" id="Linotype\Bundle\LinotypeBundle\Repository\LinotypeUserRepository" public="false"/>
 
+        <!-- Service: LinotypeTranslateRepository -->
+        <service id="linotype.repo.translate" class="Linotype\Bundle\LinotypeBundle\Repository\LinotypeTranslateRepository" public="true">
+            <argument type="service" id="Doctrine\Common\Persistence\ManagerRegistry"/>
+        </service>
+        <service alias="linotype.repo.translate" id="Linotype\Bundle\LinotypeBundle\Repository\LinotypeTranslateRepository" public="false"/>
 
         <!-- Service: LinotypeMetaRepository -->
         <service id="linotype.repo.meta" class="Linotype\Bundle\LinotypeBundle\Repository\LinotypeMetaRepository" public="true">

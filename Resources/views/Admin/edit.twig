@@ -5,10 +5,17 @@
 {% endblock %}
 
     {% block header %}
-        <h1 class="mb-0 mt-2">Edit {{title}} Page</h1>
+        <div class="panel-block">
+            <h2 class="m-0 text-primary">Edit {{title}} Page</h2>
+        </div>
     {% endblock %}
 
     {% block content %}
+        {# <ul class="tab tab-block">
+            <li class="tab-item active"><a href="#tabs">General</a></li>
+            <li class="tab-item"><a href="#tabs">Product</a></li>
+            <li class="tab-item"><a href="#tabs">Gallery</a></li>
+        </ul> #}
         {{ linotype_admin( 'template', template_id ) }}    
     {% endblock %}
 
@@ -23,6 +30,9 @@
 
 {% block viewer %}
     <div class="viewer">
+        <div class="viewer-toolbar">
+            <a href="{{template_path}}" target="_blank">https://linotype.wip{{template_path}}</a>
+        </div>
         <div class="viewer-content">
             <div class="viewer-content-top-left"></div>
             <div class="viewer-content-top-right"></div>

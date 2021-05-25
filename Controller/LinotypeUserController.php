@@ -70,6 +70,7 @@ class LinotypeUserController extends AbstractController
 
         return $this->loader->render('@Linotype/User/list.twig', [
             'breadcrumb' => $breadcrumb,
+            'menu' => $this->linotype->getMenu('user'),
             'title' => 'Users',
             'current' => '/admin/user/list',
             'map' => $this->map,

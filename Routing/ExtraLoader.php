@@ -2,6 +2,7 @@
 
 namespace Linotype\Bundle\LinotypeBundle\Routing;
 
+use Linotype\Bundle\LinotypeBundle\Controller\LinotypeController;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
@@ -30,9 +31,10 @@ class ExtraLoader extends Loader
             if ( isset( $map['path'] ) && $map['path']  )
             {
                 $routes->add( $map_key, new Route( $map['path'], 
-                    [ '_controller' => 'Linotype\Bundle\LinotypeBundle\Controller\LinotypeController::index' ]
+                    [ '_controller' => 'Linotype\Bundle\LinotypeBundle\Controller\LinotypeController::index' ],
+                    [ '_locale' => 'en' ],
+                    [ '_locale' => 'en|fr|de' ]
                 ));
-                
             }
         }
         

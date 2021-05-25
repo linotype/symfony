@@ -10,6 +10,8 @@ use Linotype\Bundle\LinotypeBundle\Service\LinotypeLoader;
 use Doctrine\ORM\EntityManagerInterface;
 use Linotype\Bundle\LinotypeBundle\Core\Linotype;
 use Linotype\Bundle\LinotypeBundle\Entity\LinotypeFile;
+use Linotype\Bundle\LinotypeBundle\Entity\LinotypeTranslate;
+use Linotype\Bundle\LinotypeBundle\Repository\LinotypeTranslateRepository;
 use Stof\DoctrineExtensionsBundle\Uploadable\UploadableManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -61,6 +63,7 @@ class LinotypeAdminController extends AbstractController
 
         return $this->loader->render('admin', [
             'breadcrumb' => $breadcrumb,
+            'menu' => $this->linotype->getMenu(),
             'map' => $this->map,
             'current' => 'dashboard',
         ]);
@@ -70,13 +73,15 @@ class LinotypeAdminController extends AbstractController
      * Linotype admin
      * @Route("/admin/content/{map_id}/edit", name="linotype_admin_edit")
      */
-    public function adminEdit( Request $request, EntityManagerInterface $em, LinotypeTemplateRepository $templateRepo, LinotypeMetaRepository $metaRepo  ): Response
+    public function adminEdit( Request $request, EntityManagerInterface $em, LinotypeTemplateRepository $templateRepo, LinotypeMetaRepository $metaRepo, LinotypeTranslateRepository $translateRepo  ): Response
     {
      
+        $locale = $request->getLocale();
+
         $map_id = $request->get('map_id');
 
         $template_id = $this->map[ $map_id ]['template'];
-        $template_path = $this->map[ $map_id ]['path'];
+        $template_path = ( $locale !== $this->linotype->getDefaultLocale() ? '/' . $locale : '' ) . $this->map[ $map_id ]['path'];
         $template = $this->templates->findById( $template_id );
         $template->setKey($map_id);
         $blocks = $this->current->renderTemplate( $template );
@@ -98,16 +103,6 @@ class LinotypeAdminController extends AbstractController
         if ( $request->getMethod() == 'POST' ) {
             
             foreach( $request->request->all() as $context_key => $context_value ) {
-                
-                //check if template ref exist
-                $metaEntityExist = $metaRepo->findOneBy([ 'context_key' => $context_key, 'template_id' => $templateEntity->getId() ]);
-
-                //create meta if not exist
-                if ( $metaEntityExist == null ) {
-                    $metaEntity = new LinotypeMeta();
-                } else {
-                    $metaEntity = $metaEntityExist;
-                }
                 
                 if ( $request->files->has( $context_key ) ) {
                     
@@ -131,10 +126,48 @@ class LinotypeAdminController extends AbstractController
 
                 if ( ! $context_value ) $context_value = '';
 
-                $metaEntity->setContextKey($context_key);
-                $metaEntity->setContextValue($context_value);
-                $metaEntity->setTemplateId( $templateEntity->getId() );
-                $em->persist($metaEntity);
+                if ( $locale == 'en' ) {
+
+                    //check if template ref exist
+                    $metaEntityExist = $metaRepo->findOneBy([ 'context_key' => $context_key, 'template_id' => $templateEntity->getId() ]);
+
+                    //create meta if not exist
+                    if ( $metaEntityExist == null ) {
+                        $metaEntity = new LinotypeMeta();
+                    } else {
+                        $metaEntity = $metaEntityExist;
+                    }
+                    
+                    $metaEntity->setContextKey($context_key);
+                    $metaEntity->setContextValue($context_value);
+                    $metaEntity->setTemplateId( $templateEntity->getId() );
+                    $em->persist($metaEntity);
+
+                } else {
+
+                    $optionTransEntityExist = $translateRepo->findOneBy([ 
+                        'type' => 'meta',
+                        'context_key' => $context_key,
+                        'template_id' => $templateEntity->getId(),
+                        'lang' => $locale,
+                    ]);
+
+                    //create option if not exist
+                    if ( $optionTransEntityExist == null ) {
+                        $optionTransEntity = new LinotypeTranslate();
+                    } else {
+                        $optionTransEntity = $optionTransEntityExist;
+                    }
+
+                    $optionTransEntity->setType('meta');
+                    $optionTransEntity->setLang($locale);
+                    $optionTransEntity->setTransId($context_key);
+                    $optionTransEntity->setContextKey($context_key);
+                    $optionTransEntity->setTemplateId($templateEntity->getId());
+                    $optionTransEntity->setTransValue($context_value);
+                    $em->persist($optionTransEntity);
+
+                }
             
             }
 
@@ -153,6 +186,7 @@ class LinotypeAdminController extends AbstractController
 
         return $this->loader->render('admin_edit', [
             'breadcrumb' => $breadcrumb,
+            'menu' => $this->linotype->getMenu($map_id),
             'template_id' => $template_id,
             'template_path' => $template_path,
             'current' => $map_id,
@@ -255,6 +289,7 @@ class LinotypeAdminController extends AbstractController
 
         return $this->loader->render('admin_edit', [
             'breadcrumb' => $breadcrumb,
+            'menu' => $this->linotype->getMenu($map_id),
             'template_id' => $template_id,
             'template_path' => $template_path,
             'current' => $map_id,
@@ -355,6 +390,7 @@ class LinotypeAdminController extends AbstractController
 
         return $this->loader->render('admin_new', [
             'breadcrumb' => $breadcrumb,
+            'menu' => $this->linotype->getMenu($map_id),
             'template_id' => $template_id,
             // 'template_path' => $template_path,
             'current' => $map_id,
@@ -430,6 +466,7 @@ class LinotypeAdminController extends AbstractController
 
         return $this->loader->render('admin_list',[
             'breadcrumb' => $breadcrumb,
+            'menu' => $this->linotype->getMenu($map_id),
             'current' => $map_id,
             'map' => $this->map,
             'title' => $template->getName(),
